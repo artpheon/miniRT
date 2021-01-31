@@ -159,7 +159,7 @@ miniRT: CMakeFiles/miniRT.dir/src/testing/test.c.o
 miniRT: CMakeFiles/miniRT.dir/src/geom/geom.c.o
 miniRT: CMakeFiles/miniRT.dir/src/main.c.o
 miniRT: CMakeFiles/miniRT.dir/build.make
-miniRT: ../libs/opengl/libmlx.a
+miniRT: ../libs/mms/libmlx.dylib
 miniRT: ../libs/libft/libft.a
 miniRT: CMakeFiles/miniRT.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking C executable miniRT"

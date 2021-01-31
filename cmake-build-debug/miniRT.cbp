@@ -97,10 +97,10 @@
 		<Unit filename="/Users/hrobbin/projects/miniRT/headers/header.h">
 			<Option target="miniRT"/>
 		</Unit>
-		<Unit filename="/Users/hrobbin/projects/miniRT/libs/opengl/libmlx.a">
+		<Unit filename="/Users/hrobbin/projects/miniRT/libs/mms/libmlx.dylib">
 			<Option target="miniRT"/>
 		</Unit>
-		<Unit filename="/Users/hrobbin/projects/miniRT/libs/opengl/mlx.h">
+		<Unit filename="/Users/hrobbin/projects/miniRT/libs/mms/mlx.h">
 			<Option target="miniRT"/>
 		</Unit>
 		<Unit filename="/Users/hrobbin/projects/miniRT/src/conf_parser/parser.c">

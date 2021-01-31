@@ -26,7 +26,25 @@ stdlib.h
 
 ../libs/mms/mlx.h
 
-/Users/hrobbin/projects/miniRT/src/conf_parser/parser.c
+../src/geom/geom.h
 header.h
-/Users/hrobbin/projects/miniRT/src/conf_parser/header.h
+../src/geom/header.h
+
+../src/mlx/mlx_head.h
+header.h
+../src/mlx/header.h
+
+../src/testing/test.h
+header.h
+../src/testing/header.h
+
+/Users/hrobbin/projects/miniRT/src/main.c
+header.h
+/Users/hrobbin/projects/miniRT/src/header.h
+mlx_head.h
+/Users/hrobbin/projects/miniRT/src/mlx_head.h
+test.h
+/Users/hrobbin/projects/miniRT/src/test.h
+geom.h
+/Users/hrobbin/projects/miniRT/src/geom.h
 

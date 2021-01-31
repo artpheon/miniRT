@@ -27,12 +27,12 @@ link_directories(${CMAKE_SOURCE_DIR}/headers/
 add_executable( miniRT
         headers/header.h
         src/conf_parser/parser.c
-        libs/opengl/mlx.h   libs/opengl/libmlx.a
+        libs/mms/mlx.h   libs/mms/libmlx.dylib
         src/mlx/mlx_head.c  src/mlx/mlx_head.h
         src/testing/test.c  src/testing/test.h
         src/geom/geom.c     src/geom/geom.h
         src/main.c)
 target_link_libraries(  miniRT LINK_PUBLIC
                         m
-                        ${CMAKE_SOURCE_DIR}/libs/opengl/libmlx.a
+                        ${CMAKE_SOURCE_DIR}/libs/mms/libmlx.dylib # added DYLD_LIBRARY_PATH with /Users/hrobbin/projects/miniRT/libs/mms as a value
                         ${CMAKE_SOURCE_DIR}/libs/libft/libft.a)

@@ -12,8 +12,8 @@ int main()
 
 	config = parser("conf.txt");
 	obj_start = config->object->content;
-//	print_config(config);
+	print_config(config);
 //	show_red_win();
-	print_vector(obj_start->origin_coord);
+//	print_vector(obj_start->origin_coord);
 	return 0;
 }
