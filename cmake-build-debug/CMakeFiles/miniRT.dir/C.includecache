@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../headers/header.h
+libft.h
+../headers/libft.h
+fcntl.h
+-
+stdio.h
+-
+mlx.h
+-
+math.h
+-
+
+../libs/libft/libft.h
+unistd.h
+-
+stdlib.h
+-
+
+../libs/mms/mlx.h
+
+/Users/hrobbin/projects/miniRT/src/conf_parser/parser.c
+header.h
+/Users/hrobbin/projects/miniRT/src/conf_parser/header.h
+

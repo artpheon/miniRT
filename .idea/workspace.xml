@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="miniRT" targetName="miniRT" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8a571609-6029-4d77-af54-4fb82d8ae542" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/libft/libft" />
+  </component>
+  <component name="ProjectId" id="1nKMFfCgWurFOM1rIScKqshKX3V" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showVisibilityIcons" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/headers" />
+      <recent name="$PROJECT_DIR$/libs" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/libft" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="miniRT" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="miniRT" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="miniRT" RUN_TARGET_NAME="miniRT">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8a571609-6029-4d77-af54-4fb82d8ae542" name="Default Changelist" comment="" />
+      <created>1611134230815</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1611134230815</updated>
+      <workItem from="1611134236028" duration="5035000" />
+      <workItem from="1611144088092" duration="2000" />
+      <workItem from="1611154754935" duration="1244000" />
+      <workItem from="1611166880955" duration="7415000" />
+      <workItem from="1611414177002" duration="4807000" />
+      <workItem from="1611421601741" duration="3726000" />
+      <workItem from="1611745386290" duration="6117000" />
+      <workItem from="1611751842925" duration="2743000" />
+      <workItem from="1611757454312" duration="25000" />
+      <workItem from="1611763981272" duration="5490000" />
+      <workItem from="1611772693732" duration="5987000" />
+      <workItem from="1611829005938" duration="3467000" />
+      <workItem from="1611833442642" duration="4125000" />
+      <workItem from="1611843092930" duration="4794000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="1117" y="555" key="#Other_File_Types" timestamp="1611171488145">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1117" y="555" key="#Other_File_Types/0.23.2560.1337@0.23.2560.1337" timestamp="1611171488145" />
+    <state x="1014" y="502" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1611135520480">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1014" y="502" key="#com.intellij.fileTypes.FileTypeChooser/0.23.2560.1337@0.23.2560.1337" timestamp="1611135520480" />
+    <state x="1018" y="446" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1611169198311">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1018" y="446" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1611169198311" />
+    <state x="1143" y="451" key="#xdebugger.XInspectDialog" timestamp="1611765789317">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1143" y="451" key="#xdebugger.XInspectDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1611765789317" />
+    <state width="2520" height="524" key="GridCell.Tab.0.bottom" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.0.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="2520" height="524" key="GridCell.Tab.0.center" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.0.center/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="2520" height="524" key="GridCell.Tab.0.left" timestamp="1611848181831">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.0.left/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181831" />
+    <state width="2520" height="524" key="GridCell.Tab.0.right" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.0.right/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="2520" height="524" key="GridCell.Tab.1.bottom" timestamp="1611848181833">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.1.bottom/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181833" />
+    <state width="2520" height="524" key="GridCell.Tab.1.center" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.1.center/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="2520" height="524" key="GridCell.Tab.1.left" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.1.left/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="2520" height="524" key="GridCell.Tab.1.right" timestamp="1611848181832">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="2520" height="524" key="GridCell.Tab.1.right/0.23.2560.1337@0.23.2560.1337" timestamp="1611848181832" />
+    <state width="600" height="428" key="javadoc.popup" timestamp="1611764302583">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state width="600" height="428" key="javadoc.popup/0.23.2560.1337@0.23.2560.1337" timestamp="1611764302583" />
+    <state x="945" y="328" width="670" height="676" key="search.everywhere.popup" timestamp="1611843650150">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="945" y="328" width="670" height="676" key="search.everywhere.popup/0.23.2560.1337@0.23.2560.1337" timestamp="1611843650150" />
+    <state x="1010" y="535" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1611134587339">
+      <screen x="0" y="23" width="2560" height="1337" />
+    </state>
+    <state x="1010" y="535" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/0.23.2560.1337@0.23.2560.1337" timestamp="1611134587339" />
+  </component>
+</project>

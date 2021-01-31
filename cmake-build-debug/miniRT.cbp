@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="miniRT"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/hrobbin/projects/miniRT/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/hrobbin/projects/miniRT/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/hrobbin/projects/miniRT/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="miniRT">
+				<Option output="/Users/hrobbin/projects/miniRT/cmake-build-debug/miniRT" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/hrobbin/projects/miniRT/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/hrobbin/projects/miniRT/headers"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/conf_parser"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/mlx"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/testing"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/geom"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/libft"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/mms"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/opengl"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 miniRT"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="miniRT/fast">
+				<Option output="/Users/hrobbin/projects/miniRT/cmake-build-debug/miniRT" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/hrobbin/projects/miniRT/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/Users/hrobbin/projects/miniRT/headers"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/conf_parser"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/mlx"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/testing"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/src/geom"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/libft"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/mms"/>
+					<Add directory="/Users/hrobbin/projects/miniRT/libs/opengl"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 miniRT/fast"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/Users/hrobbin/projects/miniRT/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/hrobbin/projects/miniRT/headers/header.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/libs/opengl/libmlx.a">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/libs/opengl/mlx.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/conf_parser/parser.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/geom/geom.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/geom/geom.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/main.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/mlx/mlx_head.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/mlx/mlx_head.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/testing/test.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/testing/test.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
