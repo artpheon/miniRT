@@ -312,15 +312,17 @@ t_config *parser(char *file)
 	char		*line;
 	t_config	*new;
 
+	printf("___file: \"%s\"___\n", file);
+	line = NULL;
 	if (-1 == (fd = open(file, O_RDONLY)))
 	{
-		perror("Cannot open file");
+		perror("Cannot open file passed as argument");
 		exit(EXIT_FAILURE);
 	}
 	new = alloc_conf();
 	while (-1 < (read_return = get_next_line(&line, fd)))
 	{
-		printf("%s\n", line);
+		//printf("%s\n", line);
 		fill_conf(&new, line);
 		free(line);
 		if (read_return == 0)

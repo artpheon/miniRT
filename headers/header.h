@@ -7,6 +7,7 @@
 # include "libft.h"
 # include <fcntl.h>
 # include <stdio.h>
+# include <string.h>
 # include <mlx.h>
 # include <math.h>
 
