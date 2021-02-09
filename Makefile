@@ -4,6 +4,7 @@ SRC		=	src/conf_parser/parser.c \
 			src/geom/geom.c \
 			src/mlx/mlx_head.c \
 			src/testing/test.c \
+			src/utils/utils.c \
 			src/main.c
 
 OBS		= ${SRC:.c=.o}
@@ -16,6 +17,7 @@ OBSB	= ${BONUS:.c=.o}
 INC		= -I./src/geom \
 		  -I./src/mlx \
 		  -I./src/testing \
+		  -I./src/utils \
 		  -I./headers \
 		  -I./libs/libft \
 		  -I./libs/mlxub

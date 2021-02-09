@@ -4,12 +4,15 @@
 
 #ifndef HEADER_H
 # define HEADER_H
-# include "libft.h"
+
 # include <fcntl.h>
 # include <stdio.h>
 # include <string.h>
+# include <stdlib.h>
 # include <mlx.h>
 # include <math.h>
+# include "libft.h"
+
 
 typedef struct	s_vector
 {
@@ -67,6 +70,11 @@ typedef struct	s_config
 	t_list			*object;
 }				t_config;
 
+# include "mlx.h"
+# include "geom.h"
+# include "mlx_head.h"
+# include "test.h"
+# include "utils.h"
 int get_next_line(char **line, int fd);
 t_config *parser(char *file);
 

@@ -2,7 +2,7 @@
 // Created by Howe Robbin on 1/28/21.
 //
 
-#include "geom.h"
+#include "header.h"
 
 float scalar_prod(t_vector vector1, t_vector vector2)
 {
