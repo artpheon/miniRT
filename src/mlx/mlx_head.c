@@ -74,7 +74,6 @@ void trace_ray(void *mlx, void *window, t_config *config)
 			angle_x++;
 			mlx_x++;
 		}
-		//printf("\n");
 		angle_y--;
 		mlx_y++;
 	}

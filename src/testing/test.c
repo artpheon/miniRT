@@ -190,16 +190,14 @@ void print_vector(t_vector v)
 	}
 }
 
-int close_succ(int keycode, t_vars *vars)
+int   key_hook(int keycode, t_vars *vars)
 {
-	printf("keycode is %d", keycode); //доделать хук
-	
-	if (keycode == 1)
+	if (keycode == 53)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
-		exit (0);
+		exit(1);
 	}
-	return 0;
+	return (0);
 }
 
 void start_show(t_config *config)
@@ -209,7 +207,7 @@ void start_show(t_config *config)
 	vars.mlx = mlx_init();
 
 	vars.win = mlx_new_window(vars.mlx, (int)(config->res.width), (int)(config->res.height), "TRY");
-	mlx_hook(vars.win, 4, 1L<<2, close_succ, &vars);
+	mlx_key_hook(vars.win, key_hook, &vars);
 	trace_ray(vars.mlx, vars.win, config);
 	mlx_loop(vars.mlx);
 }

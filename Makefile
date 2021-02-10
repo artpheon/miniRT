@@ -40,6 +40,8 @@ LIN_LIBS	= -L./libs/libft -lft \
 		  -lm
 
 APP_LIBS	= -L./libs/libft -lft \
+			-framework OpenGL \
+			-framework AppKit \
 			libmlx.dylib
 
 all: unix
@@ -56,9 +58,11 @@ apple: ${OBS}
 
 clean:
 	${RM} ${OBS}
+	@make clean -C ./libs/libft/
 
 fclean: clean
 	${RM} ${NAME}
+	@make fclean -C ./libs/libft/
 
 re: fclean all
 
