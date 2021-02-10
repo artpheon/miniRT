@@ -2,7 +2,7 @@
 // Created by Howe Robbin on 1/28/21.
 //
 
-#include "test.h"
+#include "header.h"
 
 void print_config(t_config *conf)
 {
@@ -188,4 +188,15 @@ void print_vector(t_vector v)
 		if (i == 14)
 			printf("\n");
 	}
+}
+
+void start_show(t_config *config)
+{
+	void *mlx;
+	void *window;
+
+	mlx = mlx_init();
+	window = mlx_new_window(mlx, (int)(config->res.width), (int)(config->res.height), "TRY");
+	trace_ray(mlx, window, config);
+	mlx_loop(mlx);
 }
