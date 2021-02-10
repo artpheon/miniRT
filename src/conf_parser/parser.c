@@ -61,6 +61,14 @@ char *skip_num(char *str)
 		str++;
 	while (ft_isdigit(*str) || *str == '.' || *str == ',')
 		str++;
+	if (*str == 43 || *str == 45)
+		str++;
+	while (ft_isdigit(*str) || *str == '.' || *str == ',')
+		str++;
+	if (*str == 43 || *str == 45)
+		str++;
+	while (ft_isdigit(*str) || *str == '.' || *str == ',')
+		str++;
 	return (str);
 }
 

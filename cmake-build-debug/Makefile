@@ -278,6 +278,33 @@ src/testing/test.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/miniRT.dir/build.make CMakeFiles/miniRT.dir/src/testing/test.c.s
 .PHONY : src/testing/test.c.s
 
+src/utils/utils.o: src/utils/utils.c.o
+
+.PHONY : src/utils/utils.o
+
+# target to build an object file
+src/utils/utils.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/miniRT.dir/build.make CMakeFiles/miniRT.dir/src/utils/utils.c.o
+.PHONY : src/utils/utils.c.o
+
+src/utils/utils.i: src/utils/utils.c.i
+
+.PHONY : src/utils/utils.i
+
+# target to preprocess a source file
+src/utils/utils.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/miniRT.dir/build.make CMakeFiles/miniRT.dir/src/utils/utils.c.i
+.PHONY : src/utils/utils.c.i
+
+src/utils/utils.s: src/utils/utils.c.s
+
+.PHONY : src/utils/utils.s
+
+# target to generate assembly for a file
+src/utils/utils.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/miniRT.dir/build.make CMakeFiles/miniRT.dir/src/utils/utils.c.s
+.PHONY : src/utils/utils.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -302,6 +329,9 @@ help:
 	@echo "... src/testing/test.o"
 	@echo "... src/testing/test.i"
 	@echo "... src/testing/test.s"
+	@echo "... src/utils/utils.o"
+	@echo "... src/utils/utils.i"
+	@echo "... src/utils/utils.s"
 .PHONY : help
 
 

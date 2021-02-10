@@ -4,6 +4,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/miniRT.dir/src/main.c.o"
   "CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o"
   "CMakeFiles/miniRT.dir/src/testing/test.c.o"
+  "CMakeFiles/miniRT.dir/src/utils/utils.c.o"
   "miniRT"
   "miniRT.pdb"
 )

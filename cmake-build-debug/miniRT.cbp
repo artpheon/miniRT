@@ -44,14 +44,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/hrobbin/projects/miniRT/headers"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/conf_parser"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/mlx"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/testing"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/geom"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/libft"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/mms"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/opengl"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
@@ -72,14 +64,6 @@
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/Users/hrobbin/projects/miniRT/headers"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/conf_parser"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/mlx"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/testing"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/src/geom"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/libft"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/mms"/>
-					<Add directory="/Users/hrobbin/projects/miniRT/libs/opengl"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.0/include"/>
 					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
@@ -94,15 +78,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/hrobbin/projects/miniRT/headers/header.h">
-			<Option target="miniRT"/>
-		</Unit>
-		<Unit filename="/Users/hrobbin/projects/miniRT/libs/mms/libmlx.dylib">
-			<Option target="miniRT"/>
-		</Unit>
-		<Unit filename="/Users/hrobbin/projects/miniRT/libs/mms/mlx.h">
-			<Option target="miniRT"/>
-		</Unit>
 		<Unit filename="/Users/hrobbin/projects/miniRT/src/conf_parser/parser.c">
 			<Option target="miniRT"/>
 		</Unit>
@@ -125,6 +100,12 @@
 			<Option target="miniRT"/>
 		</Unit>
 		<Unit filename="/Users/hrobbin/projects/miniRT/src/testing/test.h">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/utils/utils.c">
+			<Option target="miniRT"/>
+		</Unit>
+		<Unit filename="/Users/hrobbin/projects/miniRT/src/utils/utils.h">
 			<Option target="miniRT"/>
 		</Unit>
 		<Unit filename="/Users/hrobbin/projects/miniRT/CMakeLists.txt">

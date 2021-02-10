@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 	{
 		config = parser(argv[1]);
 		start_show(config);
+		print_config(config);
 	}
 	else
 		close_app("No arguments passed", 1);

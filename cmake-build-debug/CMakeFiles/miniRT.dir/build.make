@@ -77,9 +77,22 @@ include CMakeFiles/miniRT.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/miniRT.dir/flags.make
 
+CMakeFiles/miniRT.dir/src/main.c.o: CMakeFiles/miniRT.dir/flags.make
+CMakeFiles/miniRT.dir/src/main.c.o: ../src/main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/miniRT.dir/src/main.c.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/main.c.o   -c /Users/hrobbin/projects/miniRT/src/main.c
+
+CMakeFiles/miniRT.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/miniRT.dir/src/main.c.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/hrobbin/projects/miniRT/src/main.c > CMakeFiles/miniRT.dir/src/main.c.i
+
+CMakeFiles/miniRT.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/main.c.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/main.c -o CMakeFiles/miniRT.dir/src/main.c.s
+
 CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o: CMakeFiles/miniRT.dir/flags.make
 CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o: ../src/conf_parser/parser.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o   -c /Users/hrobbin/projects/miniRT/src/conf_parser/parser.c
 
 CMakeFiles/miniRT.dir/src/conf_parser/parser.c.i: cmake_force
@@ -90,9 +103,22 @@ CMakeFiles/miniRT.dir/src/conf_parser/parser.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/conf_parser/parser.c.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/conf_parser/parser.c -o CMakeFiles/miniRT.dir/src/conf_parser/parser.c.s
 
+CMakeFiles/miniRT.dir/src/geom/geom.c.o: CMakeFiles/miniRT.dir/flags.make
+CMakeFiles/miniRT.dir/src/geom/geom.c.o: ../src/geom/geom.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/miniRT.dir/src/geom/geom.c.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/geom/geom.c.o   -c /Users/hrobbin/projects/miniRT/src/geom/geom.c
+
+CMakeFiles/miniRT.dir/src/geom/geom.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/miniRT.dir/src/geom/geom.c.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/hrobbin/projects/miniRT/src/geom/geom.c > CMakeFiles/miniRT.dir/src/geom/geom.c.i
+
+CMakeFiles/miniRT.dir/src/geom/geom.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/geom/geom.c.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/geom/geom.c -o CMakeFiles/miniRT.dir/src/geom/geom.c.s
+
 CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o: CMakeFiles/miniRT.dir/flags.make
 CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o: ../src/mlx/mlx_head.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o   -c /Users/hrobbin/projects/miniRT/src/mlx/mlx_head.c
 
 CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.i: cmake_force
@@ -105,7 +131,7 @@ CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.s: cmake_force
 
 CMakeFiles/miniRT.dir/src/testing/test.c.o: CMakeFiles/miniRT.dir/flags.make
 CMakeFiles/miniRT.dir/src/testing/test.c.o: ../src/testing/test.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/miniRT.dir/src/testing/test.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/miniRT.dir/src/testing/test.c.o"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/testing/test.c.o   -c /Users/hrobbin/projects/miniRT/src/testing/test.c
 
 CMakeFiles/miniRT.dir/src/testing/test.c.i: cmake_force
@@ -116,53 +142,40 @@ CMakeFiles/miniRT.dir/src/testing/test.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/testing/test.c.s"
 	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/testing/test.c -o CMakeFiles/miniRT.dir/src/testing/test.c.s
 
-CMakeFiles/miniRT.dir/src/geom/geom.c.o: CMakeFiles/miniRT.dir/flags.make
-CMakeFiles/miniRT.dir/src/geom/geom.c.o: ../src/geom/geom.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/miniRT.dir/src/geom/geom.c.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/geom/geom.c.o   -c /Users/hrobbin/projects/miniRT/src/geom/geom.c
+CMakeFiles/miniRT.dir/src/utils/utils.c.o: CMakeFiles/miniRT.dir/flags.make
+CMakeFiles/miniRT.dir/src/utils/utils.c.o: ../src/utils/utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/miniRT.dir/src/utils/utils.c.o"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/utils/utils.c.o   -c /Users/hrobbin/projects/miniRT/src/utils/utils.c
 
-CMakeFiles/miniRT.dir/src/geom/geom.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/miniRT.dir/src/geom/geom.c.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/hrobbin/projects/miniRT/src/geom/geom.c > CMakeFiles/miniRT.dir/src/geom/geom.c.i
+CMakeFiles/miniRT.dir/src/utils/utils.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/miniRT.dir/src/utils/utils.c.i"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/hrobbin/projects/miniRT/src/utils/utils.c > CMakeFiles/miniRT.dir/src/utils/utils.c.i
 
-CMakeFiles/miniRT.dir/src/geom/geom.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/geom/geom.c.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/geom/geom.c -o CMakeFiles/miniRT.dir/src/geom/geom.c.s
-
-CMakeFiles/miniRT.dir/src/main.c.o: CMakeFiles/miniRT.dir/flags.make
-CMakeFiles/miniRT.dir/src/main.c.o: ../src/main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/miniRT.dir/src/main.c.o"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/miniRT.dir/src/main.c.o   -c /Users/hrobbin/projects/miniRT/src/main.c
-
-CMakeFiles/miniRT.dir/src/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/miniRT.dir/src/main.c.i"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/hrobbin/projects/miniRT/src/main.c > CMakeFiles/miniRT.dir/src/main.c.i
-
-CMakeFiles/miniRT.dir/src/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/main.c.s"
-	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/main.c -o CMakeFiles/miniRT.dir/src/main.c.s
+CMakeFiles/miniRT.dir/src/utils/utils.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/miniRT.dir/src/utils/utils.c.s"
+	/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/hrobbin/projects/miniRT/src/utils/utils.c -o CMakeFiles/miniRT.dir/src/utils/utils.c.s
 
 # Object files for target miniRT
 miniRT_OBJECTS = \
+"CMakeFiles/miniRT.dir/src/main.c.o" \
 "CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o" \
+"CMakeFiles/miniRT.dir/src/geom/geom.c.o" \
 "CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o" \
 "CMakeFiles/miniRT.dir/src/testing/test.c.o" \
-"CMakeFiles/miniRT.dir/src/geom/geom.c.o" \
-"CMakeFiles/miniRT.dir/src/main.c.o"
+"CMakeFiles/miniRT.dir/src/utils/utils.c.o"
 
 # External object files for target miniRT
 miniRT_EXTERNAL_OBJECTS =
 
+miniRT: CMakeFiles/miniRT.dir/src/main.c.o
 miniRT: CMakeFiles/miniRT.dir/src/conf_parser/parser.c.o
+miniRT: CMakeFiles/miniRT.dir/src/geom/geom.c.o
 miniRT: CMakeFiles/miniRT.dir/src/mlx/mlx_head.c.o
 miniRT: CMakeFiles/miniRT.dir/src/testing/test.c.o
-miniRT: CMakeFiles/miniRT.dir/src/geom/geom.c.o
-miniRT: CMakeFiles/miniRT.dir/src/main.c.o
+miniRT: CMakeFiles/miniRT.dir/src/utils/utils.c.o
 miniRT: CMakeFiles/miniRT.dir/build.make
-miniRT: ../libs/mms/libmlx.dylib
-miniRT: ../libs/libft/libft.a
 miniRT: CMakeFiles/miniRT.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking C executable miniRT"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/hrobbin/projects/miniRT/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable miniRT"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/miniRT.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

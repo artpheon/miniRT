@@ -22,8 +22,11 @@ typedef struct s_vplane
 	float y_pixel;
 }				t_vplane;
 
-void 	my_mlx_pixel_put(t_data *data, int x, int y, int colour);
-void	show_red_win();
+typedef struct  s_vars {
+    void    *mlx;
+    void    *win;
+}               t_vars;
+
 t_vplane	*get_new_plane(float width, float height, float fov);
 void	trace_ray(void *mlx, void *window, t_config *config);
 

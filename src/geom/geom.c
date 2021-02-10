@@ -4,7 +4,7 @@
 
 #include "header.h"
 
-float scalar_prod(t_vector vector1, t_vector vector2)
+float scalar_prod(t_vector vector1, t_vector vector2) /* scalar product, dot product */
 {
 	return (vector1.x * vector2.x +
 			vector1.y * vector2.y +
@@ -16,11 +16,13 @@ float vector_length(t_vector v)
 	float x;
 	float y;
 	float z;
+	float length;
 
 	x = powf(v.x, 2);
 	y = powf(v.y, 2);
 	z = powf(v.z, 2);
-	return (sqrtf(x + y + z));
+	length = sqrtf(x + y + z);
+	return (length);
 }
 
 t_vector norm_vector(t_vector v)
