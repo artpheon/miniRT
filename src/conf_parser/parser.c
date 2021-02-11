@@ -306,7 +306,6 @@ t_config *parser(char *file)
 	new = alloc_conf();
 	while (-1 < (read_return = get_next_line(&line, fd)))
 	{
-		//printf("%s\n", line);
 		fill_conf(&new, line);
 		free(line);
 		if (read_return == 0)

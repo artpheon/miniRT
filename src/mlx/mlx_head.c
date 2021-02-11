@@ -12,8 +12,8 @@ t_vplane	get_new_plane(float width, float height, float fov)
 	asp_ratio = width / height; 
 	plane.width = tan(M_PI * 0.5 * fov / 180.);
 	plane.width *= 2;
-	plane.height = plane.width / asp_ratio;
-	plane.x_pixel = plane.width / width;
+	plane.height = plane.width / asp_ratio; 
+	plane.x_pixel = plane.width / width; /* квадрат сетки, соответствующий пикселю: Vx = (Vw / Cw), then * Cx*/
 	plane.y_pixel = plane.height / height;
 	return (plane);
 }
@@ -44,7 +44,6 @@ void trace_ray(void *mlx, void *window, t_config *config)
 {
     int mlx_x, mlx_y;
     float angle_x, angle_y;
-	float x_ray, y_ray;
     int color;
 	t_vector ray;
 	t_vplane new_plane;
@@ -56,18 +55,16 @@ void trace_ray(void *mlx, void *window, t_config *config)
 	angle_y = (config->res.height) / 2;
 	while (angle_y >= (config->res.height / 2) * (-1))
 	{
-		y_ray = angle_y * new_plane.y_pixel;
 		angle_x = (config->res.width / 2) * (-1);
 		mlx_x = 0;
 		while (angle_x <= (config->res.width / 2))
 		{
-			x_ray = angle_x * new_plane.x_pixel;
-			ray = set_vector(x_ray, y_ray, -1);
+			ray = set_vector(angle_x * new_plane.x_pixel, angle_y * new_plane.y_pixel, -1);
 			ray = norm_vector(ray);
 			if (sphere_inter(config->camera->content, ray, config->object->next->content))
 				color = 0xFFAAFF;
 			else
-				color = 0x808080;
+				color = 0x202020;
 			mlx_pixel_put(mlx, window, mlx_x, mlx_y, color);
 			angle_x++;
 			mlx_x++;

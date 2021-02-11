@@ -10,7 +10,7 @@
 	#  define ESC 65307
 # elif __APPLE__
 	#  define OS "Mac"
-	#  define ESC 35
+	#  define ESC 53
 # endif
 
 # include <fcntl.h>
