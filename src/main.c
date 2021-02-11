@@ -1,9 +1,5 @@
 #include "header.h"
-#ifdef __linux__
-	# define OS "Linux"
-#elif __APPLE__
-	# define OS "Mac"
-#endif
+
 
 // minirt part 1: https://drive.google.com/file/d/1w2Ca7xNOULY6GQWxD2l6H_1sNyGnX-S5/view
 //miniRT part 2: https://drive.google.com/file/d/1DJ4OB9FcucNFlNBTUxb4C94HJDR3jNG7/edit

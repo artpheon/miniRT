@@ -3,7 +3,6 @@
 //
 
 #include "header.h"
-
 void print_config(t_config *conf)
 {
 	for (int i = 0; i < 60; i++)
@@ -192,11 +191,11 @@ void print_vector(t_vector v)
 
 int   key_hook(int keycode, t_vars *vars)
 {
-	if (keycode == 53)
+	if (keycode == ESC)
 	{
 		mlx_destroy_window(vars->mlx, vars->win);
-		exit(1);
 	}
+	printf("key: %d\n", keycode);
 	return (0);
 }
 

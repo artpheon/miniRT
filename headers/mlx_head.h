@@ -27,7 +27,7 @@ typedef struct  s_vars {
     void    *win;
 }               t_vars;
 
-t_vplane	*get_new_plane(float width, float height, float fov);
+t_vplane	get_new_plane(float width, float height, float fov);
 void	trace_ray(void *mlx, void *window, t_config *config);
 
 

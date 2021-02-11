@@ -9,24 +9,14 @@ SRC		=	src/conf_parser/parser.c \
 
 OBS		= ${SRC:.c=.o}
 
-OBSB	= ${BONUS:.c=.o}
-
 %.o: %.c
-	gcc -Wall -Wextra -Werror ${APP_INC} -g -c $< -o ${<:.c=.o}
+	gcc -Wall -Wextra -Werror ${LIN_INC} -g -c $< -o ${<:.c=.o}
 
-LIN_INC		= -I./src/geom \
-		  -I./src/mlx \
-		  -I./src/testing \
-		  -I./src/utils \
-		  -I./headers \
+LIN_INC		= -I./headers \
 		  -I./libs/libft \
 		  -I./libs/mlxub
 
-APP_INC		= -I./src/geom \
-		  -I./src/mlx \
-		  -I./src/testing \
-		  -I./src/utils \
-		  -I./headers \
+APP_INC		= -I./headers \
 		  -I./libs/libft \
 		  -I./libs/mms
 
@@ -44,9 +34,9 @@ APP_LIBS	= -L./libs/libft -lft \
 			-framework AppKit \
 			libmlx.dylib
 
-all: unix
+all: linux
 
-unix:	${OBS}
+linux:	${OBS}
 	@make -C ./libs/libft/
 	gcc ${OBS} -Wall -Wextra -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
 
