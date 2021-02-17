@@ -4,73 +4,73 @@
 
 #include "header.h"
 
-t_vplane	get_new_plane(float width, float height, float fov)
+int intersect_sp(t_ray ray, t_object *obj)
 {
-	t_vplane plane;
-	float	asp_ratio;
-
-	asp_ratio = width / height; 
-	plane.width = tan(M_PI * 0.5 * fov / 180.);
-	plane.width *= 2;
-	plane.height = plane.width / asp_ratio; 
-	plane.x_pixel = plane.width / width; /* квадрат сетки, соответствующий пикселю: Vx = (Vw / Cw), then * Cx*/
-	plane.y_pixel = plane.height / height;
-	return (plane);
-}
-
-int sphere_inter(t_camera *cam, t_vector ray, t_object *obj)
-{
+	t_vector sp_to_ray;
 	float b;
 	float c;
 	float discriminant;
-	float dist_1;
-	float dist_2;
-	t_vector sp_cam;
+	float dist;
 
-	sp_cam = vector_sub(cam->origin_coord, obj->origin_coord);
-	b = 2 * (scalar_prod(sp_cam, ray));
-	c = scalar_prod(sp_cam, sp_cam) - ((obj->sphere_diam / 2.) * (obj->sphere_diam / 2.));
+	sp_to_ray = vector_sub(ray.origin, obj->origin_coord);
+	b = 2 * scalar_prod(ray.direction, sp_to_ray);
+	c = scalar_prod(sp_to_ray, sp_to_ray) - ((obj->sphere_diam / 2) * (obj->sphere_diam / 2));
 	discriminant = (b * b) - (4 * c);
-	if (discriminant < 0)
-		return (0);
-	dist_1 = ((b * (-1)) - sqrtf(discriminant)) / 2;
-	dist_2 = ((b * (-1)) + sqrtf(discriminant)) / 2;
-	if (dist_1 > 0 || dist_2 > 0)
-		return (1);
+	if (discriminant >= 0)
+	{
+		dist = ((b * -1) - sqrtf(discriminant)) / 2;
+		if (dist > 0)
+			return (1);
+	}
 	return (0);
+}
+
+t_vector get_sp_plane(float width, float height, t_camera *cam)
+{
+	t_vector new;
+	float vp_width;
+	float vp_height;
+	float aspect_ratio;
+
+	aspect_ratio = width / height;
+	vp_width = tan(M_PI * 0.5 * cam->fov / 180.) * 2;
+	vp_height = vp_width / aspect_ratio;
+	new.x = vp_width / width;
+	new.y = vp_height / height;
+	new.z = -1;
+	return (new);
 }
 
 void trace_ray(void *mlx, void *window, t_config *config)
 {
-    int mlx_x, mlx_y;
-    float angle_x, angle_y;
-    int color;
-	t_vector ray;
-	t_vplane new_plane;
-	
-	mlx_y = 0;
-	new_plane = get_new_plane(config->res.width,
-							  config->res.height,
-							  ((t_camera *)(config->camera->content))->fov);
-	angle_y = (config->res.height) / 2;
-	while (angle_y >= (config->res.height / 2) * (-1))
+	int canvas_x;
+	int canvas_y;
+	float vp_x;
+	float vp_y;
+	int colour;
+	t_ray ray;
+	t_vector plane;
+
+	plane = get_sp_plane(config->res.width, config->res.height, config->camera->content);
+	canvas_y = 0;
+	vp_y = (config->res.height) / 2;
+	while (vp_y >= (config->res.height) / 2 * (-1))
 	{
-		angle_x = (config->res.width / 2) * (-1);
-		mlx_x = 0;
-		while (angle_x <= (config->res.width / 2))
+		vp_x = (config->res.width) / 2 * (-1);
+		canvas_x = 0;
+		while (vp_x <= config->res.width / 2)
 		{
-			ray = set_vector(angle_x * new_plane.x_pixel, angle_y * new_plane.y_pixel, -1);
-			ray = norm_vector(ray);
-			if (sphere_inter(config->camera->content, ray, config->object->next->content))
-				color = 0xFFAAFF;
+			ray = set_ray(((t_camera *)(config->camera->content))->origin_coord,
+			set_nvector(plane.x * vp_x, plane.y * vp_y, -1));
+			if (intersect_sp(ray, config->object->next->content))
+				colour = ctohex(((t_object *)(config->object->next->content))->rgb);
 			else
-				color = 0x202020;
-			mlx_pixel_put(mlx, window, mlx_x, mlx_y, color);
-			angle_x++;
-			mlx_x++;
+				colour = 0x202020;
+			mlx_pixel_put(mlx, window, canvas_x, canvas_y, colour);
+			vp_x++;
+			canvas_x++;
 		}
-		angle_y--;
-		mlx_y++;
+		vp_y--;
+		canvas_y++;
 	}
-	printf("params: %.1f, %.1f, %f, %f\n", new_plane.height, new_plane.width, new_plane.x_pixel, new_plane.y_pixel);
 }
