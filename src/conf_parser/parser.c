@@ -46,7 +46,7 @@ t_config *alloc_conf()
 	t_config *conf;
 
 	if (!(conf = (t_config *)malloc(sizeof(t_config))))
-		close_app("Could not allocate memory for t_config", 1);
+		exit_error("Could not allocate memory for t_config", 1);
 	conf->object = NULL;
 	conf->light = NULL;
 	conf->camera = NULL;
@@ -137,7 +137,7 @@ t_list	*get_camera(char *line)
 
 	line++;
 	if (!(new_cam = (t_camera *)malloc(sizeof(t_camera))))
-		close_app("Could not allocate memory for camera", 1);
+		exit_error("Could not allocate memory for camera", 1);
 	new_cam->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_cam->vector_norm = str_to_three(line);
@@ -154,7 +154,7 @@ t_list *get_light(char *line)
 
 	line++;
 	if (!(new_light = (t_light *)malloc(sizeof(t_light))))
-		close_app("Could not allocate memory for light", 1);
+		exit_error("Could not allocate memory for light", 1);
 	new_light->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_light->ratio = (float)ft_atof(line);
@@ -171,7 +171,7 @@ t_list *get_sphere(char *line)
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
-		close_app("Could not allocate memory for an object", 1);
+		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sp", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
@@ -189,7 +189,7 @@ t_list *get_plane(char *line)
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
-		close_app("Could not allocate memory for an object", 1);
+		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "pl", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
@@ -207,7 +207,7 @@ t_list *get_square(char *line)
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
-		close_app("Could not allocate memory for an object", 1);
+		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sq", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
@@ -227,7 +227,7 @@ t_list *get_cylinder(char *line)
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
-		close_app("Could not allocate memory for an object", 1);
+		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "cy", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
@@ -249,7 +249,7 @@ t_list *get_triangle(char *line)
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
-		close_app("Could not allocate memory for an object", 1);
+		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "tr", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);

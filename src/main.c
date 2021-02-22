@@ -19,6 +19,6 @@ int main(int argc, char **argv)
 		print_config(config);
 	}
 	else
-		close_app("No arguments passed", 1);
+		exit_error("No arguments passed", 1);
 	return 0;
 }

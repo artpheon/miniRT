@@ -12,15 +12,15 @@ int intersect_sp(t_ray ray, t_object *obj)
 	float discriminant;
 	float dist;
 
-	sp_to_ray = vector_sub(ray.origin, obj->origin_coord);
-	b = 2 * scalar_prod(ray.direction, sp_to_ray);
+	sp_to_ray = vector_sub(ray.orig, obj->origin_coord);
+	b = 2 * scalar_prod(ray.dir, sp_to_ray);
 	c = scalar_prod(sp_to_ray, sp_to_ray) - ((obj->sphere_diam / 2) * (obj->sphere_diam / 2));
 	discriminant = (b * b) - (4 * c);
 	if (discriminant >= 0)
 	{
 		dist = ((b * -1) - sqrtf(discriminant)) / 2;
 		if (dist > 0)
-			return (1);
+			return (dist);
 	}
 	return (0);
 }
@@ -41,6 +41,43 @@ t_vector get_sp_plane(float width, float height, t_camera *cam)
 	return (new);
 }
 
+t_vector normal(t_vector surf_point, t_object *sphere)
+{
+	t_vector new;
+
+	new = vector_sub(surf_point, sphere->origin_coord);
+	return (norm_vector(new));
+}
+
+float maxx(float a, float b)
+{
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+
+int	colour_at(t_object *sphere, t_vector pos_hit, t_vector normal, t_config *config)
+{
+	t_mat new;
+	t_vector to_cam;
+	int colour;
+	t_ray to_light;
+	t_vector half_vector;
+
+	new.amb = 0.05;
+	new.diff = 1.0;
+	new.spec = 1.0;
+	to_cam = vector_sub(((t_camera *)(config->camera->content))->origin_coord, pos_hit);
+	colour = new.amb;
+	to_light = set_ray(pos_hit, vector_sub(((t_light *)(config->light->content))->origin_coord, pos_hit));
+	colour += ctohex(sphere->rgb) * new.diff * maxx(scalar_prod(normal, to_light.dir), 0);
+	half_vector = norm_vector(vector_add(to_light.dir, to_cam));
+	colour += ctohex(((t_light *)(config->light->content))->rgb) * new.spec * maxx(scalar_prod(normal, half_vector), 0) * 50 * 50;
+	//printf("%x\n", colour);
+	return colour;
+}
+
 void trace_ray(void *mlx, void *window, t_config *config)
 {
 	int canvas_x;
@@ -48,6 +85,9 @@ void trace_ray(void *mlx, void *window, t_config *config)
 	float vp_x;
 	float vp_y;
 	int colour;
+	int dist_hit;
+	t_vector pos_hit;
+	t_vector hit_normal;
 	t_ray ray;
 	t_vector plane;
 
@@ -62,8 +102,12 @@ void trace_ray(void *mlx, void *window, t_config *config)
 		{
 			ray = set_ray(((t_camera *)(config->camera->content))->origin_coord,
 			set_nvector(plane.x * vp_x, plane.y * vp_y, -1));
-			if (intersect_sp(ray, config->object->next->content))
-				colour = ctohex(((t_object *)(config->object->next->content))->rgb);
+			if ((dist_hit = intersect_sp(ray, config->object->next->content)))
+			{
+				pos_hit = vector_add(ray.orig, v_mult_scal(ray.dir, dist_hit));
+				hit_normal = normal(pos_hit, config->object->next->content);
+				colour = colour_at(config->object->next->content, pos_hit, hit_normal, config);
+			}
 			else
 				colour = 0x202020;
 			mlx_pixel_put(mlx, window, canvas_x, canvas_y, colour);

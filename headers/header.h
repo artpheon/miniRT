@@ -12,20 +12,7 @@
 	#  define OS "Mac"
 	#  define ESC 53
 # endif
-
-# include <fcntl.h>
-# include <stdio.h>
-# include <string.h>
-# include <stdlib.h>
-# include <mlx.h>
-# include <math.h>
 # include "libft.h"
-# include "parser.h"
-# include "geom.h"
-# include "mlx_head.h"
-# include "test.h"
-# include "utils.h"
-# include "save.h"
 
 typedef struct	s_vector
 {
@@ -82,5 +69,33 @@ typedef struct	s_config
 	t_list			*light;
 	t_list			*object;
 }				t_config;
+
+typedef struct  s_ray
+{
+    t_vector    orig;
+    t_vector    dir;
+}               t_ray;
+
+typedef struct  s_mat
+{
+    float		amb; //0.05
+	float		diff; // 1
+	float		spec; // 1
+    t_vector    rgb; 
+}               t_mat;
+
+# include <fcntl.h>
+# include <stdio.h>
+# include <string.h>
+# include <stdlib.h>
+# include <mlx.h>
+# include <math.h>
+# include "parser.h"
+# include "mlx.h"
+# include "geom.h"
+# include "mlx_head.h"
+# include "test.h"
+# include "utils.h"
+
 
 #endif //MINIRT_HEADER_H

@@ -24,8 +24,8 @@ t_ray set_ray(t_vector origin, t_vector dir)
 {
     t_ray new;
 
-    new.origin = origin;
-    new.direction = dir;
+    new.orig = origin;
+    new.dir = dir;
     return (new);
 }
 
@@ -61,7 +61,7 @@ int ctohex(t_vector rgb)
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-void close_app(char *message, int errn)
+void exit_error(char *message, int errn)
 {
     perror(message);
     exit(errn);
