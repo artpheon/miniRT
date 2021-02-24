@@ -47,10 +47,23 @@ t_scene *alloc_scene()
 
 	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
 		exit_error("Could not allocate memory for t_scene", 1);
+	scene->height = 0;
+	scene->width = 0;
+	scene->ambl.ratio = -1;
 	scene->object = NULL;
 	scene->light = NULL;
 	scene->camera = NULL;
-	return(scene);
+	return (scene);
+}
+
+void	p_check_n(t_vector *n)
+{
+	if (n->x > 1 || n->x < 0)
+		exit_error("Scene has wrong normalized orientation v3.", -1);
+	if (n->y > 1 || n->y < 0)
+		exit_error("Scene has wrong normalized orientation v3.", -1);
+	if (n->z > 1 || n->z < 0)
+		exit_error("Scene has wrong normalized orientation v3.", -1);
 }
 
 char *skip_num(char *str)
@@ -141,8 +154,8 @@ t_ambient get_ambient(char *line)
 
 t_list	*get_camera(char *line)
 {
-	t_list *new;
-	t_camera *new_cam;
+	t_list		*new;
+	t_camera	*new_cam;
 
 	line++;
 	
@@ -152,7 +165,11 @@ t_list	*get_camera(char *line)
 	line = skip_num(line);
 	new_cam->vector_norm = str_to_three(line);
 	line = skip_num(line);
-	new_cam->fov = (char)ft_atoi(line);
+	new_cam->fov = ft_atoi(line);
+	if (new_cam->fov < 1)
+		exit_error("Camera FOV is wrong.", -1);
+	if (new_cam->fov < 35)
+		perror("Camera FOV might be too low.");
 	new = ft_lstnew(new_cam);
 	return (new);
 }
@@ -186,6 +203,8 @@ t_list *get_sphere(char *line)
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_obj->sp_radius = (float)ft_atof(line) / 2;
+	if (new_obj->sp_radius <= 0)
+		exit_error("Sphere radius is too small.", -1);
 	line = skip_num(line);
 	new_obj->rgb = str_to_three(line);
 	new = ft_lstnew(new_obj);
@@ -204,6 +223,7 @@ t_list *get_plane(char *line)
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_obj->vector_norm = str_to_three(line);
+	p_check_n(&new_obj->vector_norm);
 	line = skip_num(line);
 	new_obj->rgb = str_to_three(line);
 	new = ft_lstnew(new_obj);
@@ -222,6 +242,7 @@ t_list *get_square(char *line)
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_obj->vector_norm = str_to_three(line);
+	p_check_n(&new_obj->vector_norm);
 	line = skip_num(line);
 	new_obj->side_size = (float)ft_atof(line);
 	line = skip_num(line);
@@ -242,6 +263,7 @@ t_list *get_cylinder(char *line)
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
 	new_obj->vector_norm = str_to_three(line);
+	p_check_n(&new_obj->vector_norm);
 	line = skip_num(line);
 	new_obj->cyl_d = (float)ft_atof(line);
 	line = skip_num(line);
@@ -272,11 +294,8 @@ t_list *get_triangle(char *line)
 	return (new);
 }
 
-void fill_scene(t_scene **sceneig, char *line)
+void fill_scene(t_scene *scene, char *line)
 {
-	t_scene *scene;
-
-	scene = *sceneig;
 	while (ft_isspace(*line))
 		line++;
 	if (*line == 'R')
@@ -297,6 +316,35 @@ void fill_scene(t_scene **sceneig, char *line)
 		ft_lstadd_back(&(scene->object), get_cylinder(line));
 	else if (*line == 't' && line[1] == 'r')
 		ft_lstadd_back(&(scene->object), get_triangle(line));
+	else if (*line == '#' || *line == '\0')
+		return ;
+	else
+		exit_error("Parser reading error. Undefined symbol in the line.", -1);
+}
+
+void 	p_first_check(int fd, char *name)
+{
+	if (fd < 0)
+		exit_error("Cannot open file passed as argument.", -1);
+	if (ft_strlen(name) < 4)
+		exit_error("Filename too short.", -1);
+	while (*name)
+		name++;
+	name -= 3;
+	if (ft_strncmp(name, ".rt", 3))
+		exit_error("Wrong file extension.", -1);
+}
+
+void 	p_second_check(int ret, t_scene *scene)
+{
+	if (ret == -1)
+		exit_error("Cannot read file", -1);
+	if (scene->width < 1 || scene->height < 1)
+		exit_error("Window width or height values are too small", -1);
+	if (scene->camera == NULL || scene->camera->content == NULL)
+		exit_error("No cameras on the scene.", -1);
+	if (scene->ambl.ratio < 0)
+		exit_error("Wrong ambient(ratio below zero).", -1);
 }
 
 t_scene *parser(char *file)
@@ -304,22 +352,21 @@ t_scene *parser(char *file)
 	int			fd;
 	int			read_return;
 	char		*line;
-	t_scene	*new;
+	t_scene		*new;
 
 	printf("___file: \"%s\"___\n", file);
 	line = NULL;
-	if (-1 == (fd = open(file, O_RDONLY)))
-		exit_error("Cannot open file passed as argument", -1);
+	fd = open(file, O_RDONLY);
+	p_first_check(fd, file);
 	new = alloc_scene();
 	while (-1 < (read_return = get_next_line(&line, fd)))
 	{
-		fill_scene(&new, line);
+		fill_scene(new, line);
 		free(line);
 		if (read_return == 0)
 			break ;
 	}
-	if (read_return == -1)
-		exit_error("Cannot read file", -1);
+	p_second_check(read_return, new);
 	close(fd);
-	return(new);
+	return (new);
 }

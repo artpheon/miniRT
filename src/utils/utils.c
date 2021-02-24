@@ -17,7 +17,8 @@ t_vector set_nvector(float x, float y, float z)
     new.x = x;
     new.y = y;
     new.z = z;
-    return (norm_vector(new));
+    normalize(&new);
+    return (new);
 }
 
 t_ray set_ray(t_vector origin, t_vector dir)
@@ -26,7 +27,7 @@ t_ray set_ray(t_vector origin, t_vector dir)
 
     new.orig = origin;
     new.dir = dir;
-    new.dir = norm_vector(new.dir);
+    normalize(&(new.dir));
     return (new);
 }
 

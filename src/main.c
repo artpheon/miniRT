@@ -8,20 +8,20 @@
 
 int main(int argc, char **argv)
 {
-	t_info *info;
-	t_info *info1;
+	t_info info;
+	t_info info1;
 
-	info = malloc(sizeof(t_info));
-	info1 = malloc(sizeof(t_info));
+	//info = malloc(sizeof(t_info));
+	//info1 = malloc(sizeof(t_info));
 
 	setbuf(stdout, NULL);
 	printf("___Working on %s___\n", OS);
 	if (argc > 1)
 	{
-		info->scene = parser(argv[1]);
-		info1->scene = parser(argv[1]);
-		print_scene(info1->scene);
-		start_show(info);
+		info.scene = parser(argv[1]);
+		info1.scene = parser(argv[1]);
+		print_scene(info1.scene);
+		start_show(&info);
 	}
 	else
 		exit_error("Wrong arguments number", 1);

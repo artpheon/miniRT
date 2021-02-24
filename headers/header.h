@@ -15,6 +15,7 @@
 # define K_D 30
 # define K_S 30
 # define P 60
+# define BGC 0x48494B
 # include "libft.h"
 
 typedef struct	s_vector
@@ -42,7 +43,7 @@ typedef struct 	s_camera
 {
 	t_vector	origin_coord;
 	t_vector	vector_norm;
-	char 		fov;
+	int 		fov;
 }				t_camera;
 
 typedef struct	s_light
