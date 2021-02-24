@@ -12,6 +12,9 @@
 	#  define OS "Mac"
 	#  define ESC 53
 # endif
+# define K_D 30
+# define K_S 30
+# define P 60
 # include "libft.h"
 
 typedef struct	s_vector
@@ -27,7 +30,7 @@ typedef struct 	s_object
 	t_vector	origin_coord;
 	t_vector	vector_norm;
 	t_vector	rgb;
-	float 		sphere_diam;
+	float 		sp_radius;
 	float		side_size;
 	float		cyl_d;
 	float 		cyl_h;
@@ -49,26 +52,21 @@ typedef struct	s_light
 	t_vector	rgb;
 }				t_light;
 
-typedef struct	s_resolution
-{
-	int width;
-	int height;
-}				t_resolution;
-
 typedef struct	s_ambient
 {
 	float		ratio;
 	t_vector	colour;
 }				t_ambient;
 
-typedef struct	s_config
+typedef struct	s_scene
 {
-	t_resolution	res;
+	int				width;
+	int				height;
 	t_ambient		ambl;
 	t_list			*camera;
 	t_list			*light;
 	t_list			*object;
-}				t_config;
+}				t_scene;
 
 typedef struct  s_ray
 {
@@ -83,6 +81,12 @@ typedef struct  s_mat
 	float		spec; // 1
     t_vector    rgb; 
 }               t_mat;
+
+typedef struct s_roots
+{
+	float		t1;
+	float		t2;
+}				t_roots;
 
 # include <fcntl.h>
 # include <stdio.h>

@@ -41,16 +41,16 @@ int ft_isspace(char c)
 	return ((c >= 9 && c <= 13) || c == 32);
 }
 
-t_config *alloc_conf()
+t_scene *alloc_scene()
 {
-	t_config *conf;
+	t_scene *scene;
 
-	if (!(conf = (t_config *)malloc(sizeof(t_config))))
-		exit_error("Could not allocate memory for t_config", 1);
-	conf->object = NULL;
-	conf->light = NULL;
-	conf->camera = NULL;
-	return(conf);
+	if (!(scene = (t_scene *)malloc(sizeof(t_scene))))
+		exit_error("Could not allocate memory for t_scene", 1);
+	scene->object = NULL;
+	scene->light = NULL;
+	scene->camera = NULL;
+	return(scene);
 }
 
 char *skip_num(char *str)
@@ -72,33 +72,42 @@ char *skip_num(char *str)
 	return (str);
 }
 
-t_resolution get_resolution(char *line)
+void get_resolution(t_scene *scene, char *line)
 {
-	t_resolution new;
-
-	line++;
-	new.width = ft_atoi(line);
+	if (*line == 'R')
+		line++;
+	scene->width = ft_atoi(line);
 	line = skip_num(line);
-	new.height = ft_atoi(line);
-	return (new);
+	scene->height = ft_atoi(line);
 }
 
 float ft_atof(const char *st)
 {
 	float	res1;
 	float	res2;
+	int 	sign;
+	char	*tmp;
 
-	while (ft_isspace(*st))
-		st++;
+	sign = 1;
 	res1 = (float)ft_atoi(st);
-	while (*st && *st != '.')
-		st++;
-	if (*st == '.')
-		st++;
-	res2 = (float)ft_atoi(st);
-	while ((int)res2 != 0)
+	res2 = 0;
+	tmp = (char *)st;
+	if (*tmp == '-')
+	{
+		sign = -1;
+		tmp++;
+	}
+	while (*tmp && (ft_isdigit(*tmp) || ft_isspace(*tmp)))
+		tmp++;
+	if (*tmp == '.')
+	{
+		tmp++;
+		res2 = (float)ft_atoi(tmp);
+		while ((int)res2 != 0)
 		res2 /= 10;
-	return (res1 + ((res1 > 0) ? res2 : -res2));
+	}
+	res2 = sign < 0 ? -res2 : res2;
+	return (res1 + res2);
 }
 
 t_vector str_to_three(const char *str)
@@ -136,6 +145,7 @@ t_list	*get_camera(char *line)
 	t_camera *new_cam;
 
 	line++;
+	
 	if (!(new_cam = (t_camera *)malloc(sizeof(t_camera))))
 		exit_error("Could not allocate memory for camera", 1);
 	new_cam->origin_coord = str_to_three(line);
@@ -175,7 +185,7 @@ t_list *get_sphere(char *line)
 	ft_strlcpy(new_obj->type, "sp", 3);
 	new_obj->origin_coord = str_to_three(line);
 	line = skip_num(line);
-	new_obj->sphere_diam = (float)ft_atof(line);
+	new_obj->sp_radius = (float)ft_atof(line) / 2;
 	line = skip_num(line);
 	new_obj->rgb = str_to_three(line);
 	new = ft_lstnew(new_obj);
@@ -262,60 +272,54 @@ t_list *get_triangle(char *line)
 	return (new);
 }
 
-void fill_conf(t_config **config, char *line)
+void fill_scene(t_scene **sceneig, char *line)
 {
-	t_config *conf;
+	t_scene *scene;
 
-	conf = *config;
+	scene = *sceneig;
 	while (ft_isspace(*line))
 		line++;
 	if (*line == 'R')
-		conf->res = get_resolution(line);
+		get_resolution(scene, line);
 	else if (*line == 'A')
-		conf->ambl = get_ambient(line);
+		scene->ambl = get_ambient(line);
 	else if (*line == 'c' && line[1] != 'y')
-		ft_lstadd_back(&(conf->camera), get_camera(line));
+		ft_lstadd_back(&(scene->camera), get_camera(line));
 	else if (*line == 'l')
-		ft_lstadd_back(&(conf->light), get_light(line));
+		ft_lstadd_back(&(scene->light), get_light(line));
 	else if (*line == 's' && line[1] == 'p')
-		ft_lstadd_back(&(conf->object), get_sphere(line));
+		ft_lstadd_back(&(scene->object), get_sphere(line));
 	else if (*line == 'p' && line[1] == 'l')
-		ft_lstadd_back(&(conf->object), get_plane(line));
+		ft_lstadd_back(&(scene->object), get_plane(line));
 	else if (*line == 's' && line[1] == 'q')
-		ft_lstadd_back(&(conf->object), get_square(line));
+		ft_lstadd_back(&(scene->object), get_square(line));
 	else if (*line == 'c' && line[1] == 'y')
-		ft_lstadd_back(&(conf->object), get_cylinder(line));
+		ft_lstadd_back(&(scene->object), get_cylinder(line));
 	else if (*line == 't' && line[1] == 'r')
-		ft_lstadd_back(&(conf->object), get_triangle(line));
+		ft_lstadd_back(&(scene->object), get_triangle(line));
 }
 
-t_config *parser(char *file)
+t_scene *parser(char *file)
 {
 	int			fd;
 	int			read_return;
 	char		*line;
-	t_config	*new;
+	t_scene	*new;
 
 	printf("___file: \"%s\"___\n", file);
 	line = NULL;
 	if (-1 == (fd = open(file, O_RDONLY)))
-	{
-		perror("Cannot open file passed as argument");
-		exit(EXIT_FAILURE);
-	}
-	new = alloc_conf();
+		exit_error("Cannot open file passed as argument", -1);
+	new = alloc_scene();
 	while (-1 < (read_return = get_next_line(&line, fd)))
 	{
-		fill_conf(&new, line);
+		fill_scene(&new, line);
 		free(line);
 		if (read_return == 0)
 			break ;
 	}
 	if (read_return == -1)
-	{
-		perror("Cannot read file");
-		exit(EXIT_FAILURE);
-	}
+		exit_error("Cannot read file", -1);
 	close(fd);
 	return(new);
 }

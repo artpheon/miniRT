@@ -8,17 +8,22 @@
 
 int main(int argc, char **argv)
 {
-	t_config	*config;
+	t_info *info;
+	t_info *info1;
+
+	info = malloc(sizeof(t_info));
+	info1 = malloc(sizeof(t_info));
 
 	setbuf(stdout, NULL);
 	printf("___Working on %s___\n", OS);
 	if (argc > 1)
 	{
-		config = parser(argv[1]);
-		start_show(config);
-		print_config(config);
+		info->scene = parser(argv[1]);
+		info1->scene = parser(argv[1]);
+		print_scene(info1->scene);
+		start_show(info);
 	}
 	else
-		exit_error("No arguments passed", 1);
+		exit_error("Wrong arguments number", 1);
 	return 0;
 }

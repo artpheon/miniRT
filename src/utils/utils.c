@@ -26,6 +26,7 @@ t_ray set_ray(t_vector origin, t_vector dir)
 
     new.orig = origin;
     new.dir = dir;
+    new.dir = norm_vector(new.dir);
     return (new);
 }
 
@@ -36,6 +37,7 @@ void strrev(char *s)
     int last;
     int i;
 
+    i = 0;
     last = ft_strlen(s) - 1;
     while (last > i)
     {
@@ -48,6 +50,13 @@ void strrev(char *s)
     }
 }
 
+float maxx(float a, float b)
+{
+	if (a > b)
+		return a;
+	else
+		return b;
+}
 
 int ctohex(t_vector rgb)
 {

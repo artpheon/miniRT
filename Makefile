@@ -34,17 +34,17 @@ APP_LIBS	= -L./libs/libft -lft \
 			-framework AppKit \
 			libmlx.dylib
 
-all: linux
+all: apple
 
 linux:	${OBS}
 	@make -C ./libs/libft/
-	gcc ${OBS} -Wall -Wextra -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra -Werror -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
 
 apple: ${OBS}
 	@make -C ./libs/libft/
 	@make -C ./libs/mms/
 	@cp ./libs/mms/libmlx.dylib .
-	gcc ${OBS} -Wall -Werror -Wextra ${APP_INC} ${APP_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra ${APP_INC} ${APP_LIBS} -o ${NAME}
 
 clean:
 	${RM} ${OBS}

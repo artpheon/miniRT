@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="61ea8372-6068-4963-9ee9-a30f3fad68e6" name="apple" defaultType="MAKE">
+      <configuration id="c707d204-2169-4b18-9c42-df3708b39626" name="apple" toolchainName="Default">
+        <build type="MAKE">
+          <make targetName="apple" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>

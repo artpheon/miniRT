@@ -4,7 +4,7 @@
 
 #include "header.h"
 
-float scalar_prod(t_vector vector1, t_vector vector2) /* scalar product, dot product */
+float dot_prod(t_vector vector1, t_vector vector2) /* scalar product, dot product */
 {
 	return (vector1.x * vector2.x +
 			vector1.y * vector2.y +
@@ -85,4 +85,46 @@ t_vector v_div_scal(t_vector v1, float num)
 	new.y = v1.y / num;
 	new.z = v1.z / num;
 	return (new);
+}
+
+t_vector rgb_add_n(t_vector rgb, float num)
+{
+	rgb.x += num;
+	rgb.y += num;
+	rgb.z += num;
+	if (rgb.x > 255)
+		rgb.x = 255;
+	if (rgb.y > 255)
+		rgb.y = 255;
+	if (rgb.z > 255)
+		rgb.z = 255;
+	return (rgb);
+}
+
+t_vector rgb_mult_n(t_vector rgb, float num)
+{
+	rgb.x *= num;
+	rgb.y *= num;
+	rgb.z *= num;
+	if (rgb.x > 255)
+		rgb.x = 255;
+	if (rgb.y > 255)
+		rgb.y = 255;
+	if (rgb.z > 255)
+		rgb.z = 255;
+	return (rgb);
+}
+
+t_vector rgb_add(t_vector rgb, t_vector add)
+{
+	rgb.x += add.x;
+	if (rgb.x > 255)
+		rgb.x = 255;
+	rgb.y += add.y;
+	if (rgb.y > 255)
+		rgb.y = 255;
+	rgb.z += add.z;
+	if (rgb.z > 255)
+		rgb.z = 255;
+	return (rgb);
 }

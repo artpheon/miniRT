@@ -3,7 +3,7 @@
 //
 
 #include "header.h"
-void print_config(t_config *conf)
+void print_scene(t_scene *conf)
 {
 	for (int i = 0; i < 60; i++)
 	{
@@ -12,9 +12,9 @@ void print_config(t_config *conf)
 			printf("\n");
 	}
 	printf("Resolution: %d x %d\n",
-		   conf->res.height,
-		   conf->res.width);
-	printf("Ambient: ratio - %f, rgb: %.0f %.0f %.0f\n",
+		   conf->height,
+		   conf->width);
+	printf("Ambient ratio: %f, rgb: %.0f %.0f %.0f\n",
 		   conf->ambl.ratio,
 		   conf->ambl.colour.x,
 		   conf->ambl.colour.y,
@@ -26,7 +26,7 @@ void print_config(t_config *conf)
 			printf("\n");
 	}
 	printf("CAMERAS:\n");
-	for (int i = 1; conf->camera->next != NULL; i++)
+	for (int i = 1; conf->camera != NULL; i++)
 	{
 		printf("Original XYZ coordinates of the camera #%d: %.2f, %.2f, %.2f\n",
 			   i,
@@ -87,7 +87,7 @@ void print_config(t_config *conf)
 				   ((t_object *) (conf->object->content))->origin_coord.x,
 				   ((t_object *) (conf->object->content))->origin_coord.y,
 				   ((t_object *) (conf->object->content))->origin_coord.z,
-				   ((t_object *) (conf->object->content))->sphere_diam,
+				   ((t_object *) (conf->object->content))->sp_radius,
 				   ((t_object *) (conf->object->content))->rgb.x,
 				   ((t_object *) (conf->object->content))->rgb.y,
 				   ((t_object *) (conf->object->content))->rgb.z);
@@ -189,25 +189,3 @@ void print_vector(t_vector v)
 	}
 }
 
-int   key_hook(int keycode, t_vars *vars)
-{
-	if (keycode == ESC)
-	{
-		mlx_destroy_window(vars->mlx, vars->win);
-		exit(0);
-	}
-	printf("key: %d\n", keycode);
-	return (0);
-}
-
-void start_show(t_config *config)
-{
-	t_vars vars;
-
-	vars.mlx = mlx_init();
-
-	vars.win = mlx_new_window(vars.mlx, (int)(config->res.width), (int)(config->res.height), "TRY");
-	mlx_key_hook(vars.win, key_hook, &vars);
-	trace_ray(vars.mlx, vars.win, config);
-	mlx_loop(vars.mlx);
-}
