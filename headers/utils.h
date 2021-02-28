@@ -3,4 +3,5 @@ void exit_error(char *message, int errn);
 t_ray set_ray(t_vector origin, t_vector dir);
 t_vector set_nvector(float x, float y, float z);
 int ctohex(t_vector rgb);
-float maxx(float a, float b);
+t_vector hextoc(int hex);
+float macheps(void);

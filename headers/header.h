@@ -15,7 +15,7 @@
 # define K_D 30
 # define K_S 30
 # define P 60
-# define BGC 0x48494B
+# define BG_COLOUR 0x48494B
 # include "libft.h"
 
 typedef struct	s_vector

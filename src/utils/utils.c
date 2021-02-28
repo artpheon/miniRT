@@ -51,12 +51,14 @@ void strrev(char *s)
     }
 }
 
-float maxx(float a, float b)
+
+float macheps(void)
 {
-	if (a > b)
-		return a;
-	else
-		return b;
+	float e = 1.0f;
+
+	while (1.0f + e / 2.0f > 1.0f)
+		e /= 2.0f;
+	return (e);
 }
 
 int ctohex(t_vector rgb)
@@ -69,6 +71,16 @@ int ctohex(t_vector rgb)
     g = rgb.y;
     b = rgb.z;
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
+t_vector hextoc(int hex)
+{
+	t_vector new;
+
+	new.x = (hex >> 16) & 0xff;
+	new.y = (hex >> 8) & 0xff;
+	new.z = hex & 0xff;
+	return(new);
 }
 
 void exit_error(char *message, int errn)

@@ -10,7 +10,7 @@ SRC		=	src/conf_parser/parser.c \
 OBS		= ${SRC:.c=.o}
 
 %.o: %.c
-	gcc -Wall -Wextra -Werror ${LIN_INC} -g -c $< -o ${<:.c=.o}
+	gcc -Wall -Wextra ${LIN_INC} -g -c $< -o ${<:.c=.o}
 
 LIN_INC		= -I./headers \
 		  -I./libs/libft \
@@ -38,7 +38,7 @@ all: apple
 
 linux:	${OBS}
 	@make -C ./libs/libft/
-	gcc ${OBS} -Wall -Wextra -Werror -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
 
 apple: ${OBS}
 	@make -C ./libs/libft/

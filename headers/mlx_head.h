@@ -50,7 +50,7 @@ typedef struct s_range
 
 t_vplane	get_new_plane(float width, float height, float fov);
 void		intersect_sp(t_ray *ray, t_object *obj, t_roots *roots);
-void		trace_ray(t_scene *scene, void *mlx, void *win);
+void		put_rays(t_scene *scene, void *mlx, void *win);
 void		start_show(t_info *info);
 int			calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y);
 int			key_hook(int keycode, t_info *info);
