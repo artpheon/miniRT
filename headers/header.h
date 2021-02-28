@@ -12,7 +12,7 @@
 	#  define OS "Mac"
 	#  define ESC 53
 # endif
-# define K_D 30
+# define K_D 35
 # define K_S 30
 # define P 60
 # define BG_COLOUR 0x48494B

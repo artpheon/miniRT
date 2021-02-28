@@ -280,23 +280,90 @@ float	l_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 	float		l_intens;
 	float		n_dot_l;
 	t_vector	v_to_lght;
+	t_list		*run;
 
 	//l_coef = K_D * (I / r^2) * fmaxf(0, n * l);
 	// r - vector to light
 	get_hit_sp(hit, cl, ray);
-	v_to_lght = vector_sub(((t_light *)(sc->light->content))->origin_coord, hit->hit_pos);
-	l_intens = ((t_light *)(sc->light->content))->ratio;
-	l_intens /= powf(vector_length(v_to_lght), 2);
-	n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
-	l_coef = K_D * l_intens * fmaxf(0, n_dot_l);
+	run = sc->light;
+	l_coef = 0;
+	while (run)
+	{
+		v_to_lght = vector_sub(((t_light *)(run->content))->origin_coord,
+							   hit->hit_pos);
+		l_intens = ((t_light *)(run->content))->ratio;
+		//l_intens /= powf(vector_length(v_to_lght), 2);
+		n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
+		if (n_dot_l > 0)
+			l_coef += l_intens * n_dot_l / (vector_length(hit->hit_normal) *
+										   vector_length(v_to_lght));
+		//l_coef = K_D * l_intens * fmaxf(0, n_dot_l);
+		run = run->next;
+	}
 	return (l_coef);
 }
+
+float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
+{
+	float		coef;
+	float		n_dot_l;
+	float		r_dot_v;
+	t_vector	v_to_lght;
+	t_vector	refl;
+	t_vector	v;
+	t_list		*run;
+
+	run = sc->light;
+	get_hit_sp(hit, cl, ray);
+	coef = 0;
+	while (run)
+	{
+		v_to_lght = vector_sub(((t_light *)(run->content))->origin_coord, hit->hit_pos);
+		n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
+		refl = v_mult_scal(v_mult_scal(hit->hit_normal, 2), n_dot_l);
+		refl = vector_sub(refl, v_to_lght);
+		v = v_mult_scal(ray->dir, -1);
+		r_dot_v = dot_prod(refl, v);
+		if (r_dot_v > 0)
+			coef += ((t_light *)(run->content))->ratio *
+				powf(r_dot_v / (vector_length(refl) * vector_length(v)), 10);
+		run = run->next;
+	}
+	return (coef);
+}
+
 //n_dot_l = dot_prod(hit->hit_normal, v_to_lgt);
 //if (n_dot_l > 0)
 //{
 //i += ((t_light *)(light->content))->ratio * fmaxf(n_dot_l, 0) /
 //(vector_length(v_to_lgt) * vector_length(v_to_lgt)); // * vector_length(hit->hit_normal)
 //}
+
+int 	in_shad(t_scene *sc, t_ray ray, t_closest cl)
+{
+	t_range		sh_range;
+	t_vector	v_to_light;
+	t_ray		r_to_light;
+	t_list		*run;
+	t_hit		hit;
+
+	sh_range.t_min = macheps();
+	sh_range.t_max = 1;
+	run = sc->light;
+	cl.closest_t *= 0.9;
+	get_hit_sp(&hit, &cl, &ray);
+	while (run)
+	{
+		v_to_light = vector_sub(((t_light *)(run->content))->origin_coord,
+								hit.hit_pos);
+		r_to_light = set_ray(hit.hit_pos, v_to_light);
+		cl_inter(&cl, &r_to_light, sc->object, &sh_range);
+		if (cl.closest_obj) // не рабоьает
+			return (1);
+		run = run->next;
+	}
+	return (0);
+}
 t_vector	ray_trace(t_ray *ray, t_scene *scene)
 {
 	t_vector	rgb;
@@ -304,11 +371,13 @@ t_vector	ray_trace(t_ray *ray, t_scene *scene)
 	t_closest	cl;
 	t_hit		hit;
 	t_range		range;
+
 	t_list		*light;
 	t_vector	temp;
 
 	range.t_min = 1;
 	range.t_max = INFINITY;
+
 	light = scene->light;
 	cl_inter(&cl, ray, scene->object, &range);
 	if (cl.closest_obj == NULL)
@@ -316,11 +385,15 @@ t_vector	ray_trace(t_ray *ray, t_scene *scene)
 	else
 	{
 		rgb = rgb_mult_n(cl.closest_obj->rgb, scene->ambl.ratio);
+		if (in_shad(scene, *ray, cl)) // fixme shadows
+			return (rgb);
 		coef = l_shading(&hit, scene, ray, &cl);
-		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef);
+		coef += s_shading(&hit, scene, ray, &cl);
+
+		//if (cl.closest_obj)
+		//	return (rgb);
+		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
 		rgb = rgb_add(rgb, temp);
-		//
-		// rgb = rgb_add(rgb, rgb_mult_n(((t_light *)(light->content))->rgb, coef));
 	}
 	return (rgb);
 }
