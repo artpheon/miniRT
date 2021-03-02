@@ -9,7 +9,7 @@
 int main(int argc, char **argv)
 {
 	t_info info;
-	t_info info1;
+	//t_info info1;
 
 	//info = malloc(sizeof(t_info));
 	//info1 = malloc(sizeof(t_info));
@@ -19,8 +19,8 @@ int main(int argc, char **argv)
 	if (argc > 1)
 	{
 		info.scene = parser(argv[1]);
-		info1.scene = parser(argv[1]);
-		print_scene(info1.scene);
+	//	info1.scene = parser(argv[1]);
+	//	print_scene(info1.scene);
 		start_show(&info);
 	}
 	else

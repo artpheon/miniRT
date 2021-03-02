@@ -102,25 +102,27 @@ t_vector normal(t_vector hit_pos, t_object *sphere)
 void	cl_inter(t_closest *cl, t_ray *ray, t_list *start, t_range *range)
 {
 	t_roots		roots;
+	t_list		*temp;
 
 	cl->closest_t = INFINITY;
 	cl->closest_obj = NULL;
-	while (start)
+	temp = start;
+	while (temp)
 	{
-		intersect_sp(ray, start->content, &roots);
+		intersect_sp(ray, temp->content, &roots);
 		if (roots.t1 >= range->t_min && roots.t1 < range->t_max &&
 			roots.t1 < cl->closest_t)
 		{
 			cl->closest_t = roots.t1;
-			cl->closest_obj = start->content;
+			cl->closest_obj = temp->content;
 		}
 		if (roots.t2 >= range->t_min && roots.t2 < range->t_max &&
 			roots.t2 < cl->closest_t)
 		{
 			cl->closest_t = roots.t2;
-			cl->closest_obj = start->content;
+			cl->closest_obj = temp->content;
 		}
-		start = start->next;
+		temp = temp->next;
 	}
 }
 
@@ -284,7 +286,6 @@ float	l_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 
 	//l_coef = K_D * (I / r^2) * fmaxf(0, n * l);
 	// r - vector to light
-	get_hit_sp(hit, cl, ray);
 	run = sc->light;
 	l_coef = 0;
 	while (run)
@@ -314,7 +315,6 @@ float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 	t_list		*run;
 
 	run = sc->light;
-	get_hit_sp(hit, cl, ray);
 	coef = 0;
 	while (run)
 	{
@@ -339,61 +339,68 @@ float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 //(vector_length(v_to_lgt) * vector_length(v_to_lgt)); // * vector_length(hit->hit_normal)
 //}
 
-int 	in_shad(t_scene *sc, t_ray ray, t_closest cl)
+
+int 	in_shad(t_scene *sc, t_hit *hit)
 {
 	t_range		sh_range;
+	t_closest	shadow;
 	t_vector	v_to_light;
 	t_ray		r_to_light;
 	t_list		*run;
-	t_hit		hit;
 
-	sh_range.t_min = macheps();
+	sh_range.t_min = 0.001;
 	sh_range.t_max = 1;
 	run = sc->light;
-	cl.closest_t *= 0.9;
-	get_hit_sp(&hit, &cl, &ray);
 	while (run)
 	{
 		v_to_light = vector_sub(((t_light *)(run->content))->origin_coord,
-								hit.hit_pos);
-		r_to_light = set_ray(hit.hit_pos, v_to_light);
-		cl_inter(&cl, &r_to_light, sc->object, &sh_range);
-		if (cl.closest_obj) // не рабоьает
+								hit->hit_pos);
+		r_to_light = set_ray(hit->hit_pos, v_to_light);
+		cl_inter(&shadow, &r_to_light, sc->object, &sh_range); //ClosestIntersection(P, L, 0.001, t_max)
+		if (shadow.closest_obj)
 			return (1);
 		run = run->next;
 	}
 	return (0);
 }
+
+t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray)
+{
+	t_vector	rgb;
+	t_vector	temp;
+	t_hit		hit;
+	t_list		*light;
+	float		coef;
+
+	light = scene->light;
+	get_hit_sp(&hit, cl, ray);
+	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio);
+	coef = l_shading(&hit, scene, ray, cl);
+	coef += s_shading(&hit, scene, ray, cl);
+	if (in_shad(scene, &hit))
+		coef = 0;
+	temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
+	rgb = rgb_add(rgb, temp);
+	return(rgb);
+}
+
 t_vector	ray_trace(t_ray *ray, t_scene *scene)
 {
 	t_vector	rgb;
-	float		coef;
+	//float		coef;
 	t_closest	cl;
-	t_hit		hit;
+	//t_hit		hit;
 	t_range		range;
-
-	t_list		*light;
-	t_vector	temp;
+	//t_vector	temp;
 
 	range.t_min = 1;
 	range.t_max = INFINITY;
-
-	light = scene->light;
 	cl_inter(&cl, ray, scene->object, &range);
 	if (cl.closest_obj == NULL)
 		return (hextoc(BG_COLOUR));
 	else
 	{
-		rgb = rgb_mult_n(cl.closest_obj->rgb, scene->ambl.ratio);
-		if (in_shad(scene, *ray, cl)) // fixme shadows
-			return (rgb);
-		coef = l_shading(&hit, scene, ray, &cl);
-		coef += s_shading(&hit, scene, ray, &cl);
-
-		//if (cl.closest_obj)
-		//	return (rgb);
-		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
-		rgb = rgb_add(rgb, temp);
+		rgb = calc_light(&cl, scene, ray);
 	}
 	return (rgb);
 }

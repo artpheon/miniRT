@@ -8,6 +8,7 @@
 # ifdef __linux__
 	#  define OS "Linux"
 	#  define ESC 65307
+	#  define TAB 65289
 # elif __APPLE__
 	#  define OS "Mac"
 	#  define ESC 53
