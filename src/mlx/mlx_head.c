@@ -276,35 +276,29 @@ int calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y)
 	return (colour);
 }*/
 
-float	l_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
+float	l_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
 {
 	float		l_coef;
 	float		l_intens;
 	float		n_dot_l;
 	t_vector	v_to_lght;
-	t_list		*run;
 
 	//l_coef = K_D * (I / r^2) * fmaxf(0, n * l);
 	// r - vector to light
-	run = sc->light;
 	l_coef = 0;
-	while (run)
-	{
-		v_to_lght = vector_sub(((t_light *)(run->content))->origin_coord,
-							   hit->hit_pos);
-		l_intens = ((t_light *)(run->content))->ratio;
-		//l_intens /= powf(vector_length(v_to_lght), 2);
-		n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
-		if (n_dot_l > 0)
-			l_coef += l_intens * n_dot_l / (vector_length(hit->hit_normal) *
-										   vector_length(v_to_lght));
-		//l_coef = K_D * l_intens * fmaxf(0, n_dot_l);
-		run = run->next;
-	}
+	v_to_lght = vector_sub(light->origin_coord,
+							hit->hit_pos);
+	l_intens = light->ratio;
+	//l_intens /= powf(vector_length(v_to_lght), 2);
+	n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
+	if (n_dot_l > 0)
+		l_coef += l_intens * n_dot_l / (vector_length(hit->hit_normal) *
+										vector_length(v_to_lght));
+	//l_coef = K_D * l_intens * fmaxf(0, n_dot_l);
 	return (l_coef);
 }
 
-float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
+float	s_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
 {
 	float		coef;
 	float		n_dot_l;
@@ -312,23 +306,16 @@ float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 	t_vector	v_to_lght;
 	t_vector	refl;
 	t_vector	v;
-	t_list		*run;
 
-	run = sc->light;
 	coef = 0;
-	while (run)
-	{
-		v_to_lght = vector_sub(((t_light *)(run->content))->origin_coord, hit->hit_pos);
-		n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
-		refl = v_mult_scal(v_mult_scal(hit->hit_normal, 2), n_dot_l);
-		refl = vector_sub(refl, v_to_lght);
-		v = v_mult_scal(ray->dir, -1);
-		r_dot_v = dot_prod(refl, v);
-		if (r_dot_v > 0)
-			coef += ((t_light *)(run->content))->ratio *
-				powf(r_dot_v / (vector_length(refl) * vector_length(v)), 10);
-		run = run->next;
-	}
+	v_to_lght = vector_sub(light->origin_coord, hit->hit_pos);
+	n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
+	refl = v_mult_scal(v_mult_scal(hit->hit_normal, 2), n_dot_l);
+	refl = vector_sub(refl, v_to_lght);
+	v = v_mult_scal(ray->dir, -1);
+	r_dot_v = dot_prod(refl, v);
+	if (r_dot_v > 0)
+		coef += light->ratio * powf(r_dot_v / (vector_length(refl) * vector_length(v)), 10);
 	return (coef);
 }
 
@@ -340,27 +327,20 @@ float	s_shading(t_hit *hit, t_scene *sc, t_ray *ray, t_closest *cl)
 //}
 
 
-int 	in_shad(t_scene *sc, t_hit *hit)
+int 	in_shad(t_scene *sc, t_light *light, t_hit *hit)
 {
 	t_range		sh_range;
 	t_closest	shadow;
 	t_vector	v_to_light;
 	t_ray		r_to_light;
-	t_list		*run;
 
 	sh_range.t_min = 0.001;
 	sh_range.t_max = 1;
-	run = sc->light;
-	while (run)
-	{
-		v_to_light = vector_sub(((t_light *)(run->content))->origin_coord,
-								hit->hit_pos);
-		r_to_light = set_ray(hit->hit_pos, v_to_light);
-		cl_inter(&shadow, &r_to_light, sc->object, &sh_range); //ClosestIntersection(P, L, 0.001, t_max)
-		if (shadow.closest_obj)
-			return (1);
-		run = run->next;
-	}
+	v_to_light = vector_sub(light->origin_coord, hit->hit_pos);
+	r_to_light = set_ray(hit->hit_pos, v_to_light);
+	cl_inter(&shadow, &r_to_light, sc->object, &sh_range); //ClosestIntersection(P, L, 0.001, t_max)
+	if (shadow.closest_obj)
+		return (1);
 	return (0);
 }
 
@@ -375,12 +355,19 @@ t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray)
 	light = scene->light;
 	get_hit_sp(&hit, cl, ray);
 	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio);
-	coef = l_shading(&hit, scene, ray, cl);
-	coef += s_shading(&hit, scene, ray, cl);
-	if (in_shad(scene, &hit))
-		coef = 0;
-	temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
-	rgb = rgb_add(rgb, temp);
+	while(light)
+	{	
+		if (in_shad(scene, light->content, &hit))
+		{
+			light = light->next;
+			continue;
+		}
+		coef = l_shading(&hit, light->content, ray, cl);
+		coef += s_shading(&hit, light->content, ray, cl);
+		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
+		rgb = rgb_add(rgb, temp);
+		light = light->next;
+	}
 	return(rgb);
 }
 

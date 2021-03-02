@@ -9,6 +9,7 @@
 	#  define OS "Linux"
 	#  define ESC 65307
 	#  define TAB 65289
+	#  define M_PI 3.14159265358979323846
 # elif __APPLE__
 	#  define OS "Mac"
 	#  define ESC 53
