@@ -37,8 +37,8 @@ typedef struct 	s_object
 	float		side_size;
 	float		cyl_d;
 	float 		cyl_h;
-	t_vector	trian2;
-	t_vector	trian3;
+	t_vector	angle2;
+	t_vector	angle3;
 }				t_object;
 
 typedef struct 	s_camera

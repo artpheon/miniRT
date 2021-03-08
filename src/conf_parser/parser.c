@@ -58,30 +58,40 @@ t_scene *alloc_scene()
 
 void	p_check_n(t_vector *n)
 {
-	if (n->x > 1 || n->x < 0)
+	if (n->x > 1 || n->x < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
-	if (n->y > 1 || n->y < 0)
+	if (n->y > 1 || n->y < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
-	if (n->z > 1 || n->z < 0)
+	if (n->z > 1 || n->z < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
 }
 
-char *skip_num(char *str)
+char *skip_1num(char *str)
 {
 	while (ft_isspace(*str))
 		str++;
-	if (*str == 43 || *str == 45)
+	if (*str == '-' || *str == '+')
 		str++;
-	while (ft_isdigit(*str) || *str == '.' || *str == ',')
+	while (ft_isdigit(*str))
 		str++;
-	if (*str == 43 || *str == 45)
+	if (*str == '.')
+	{
 		str++;
-	while (ft_isdigit(*str) || *str == '.' || *str == ',')
+		while (ft_isdigit(*str))
+			str++;
+	}
+	while (ft_isspace(*str))
 		str++;
-	if (*str == 43 || *str == 45)
-		str++;
-	while (ft_isdigit(*str) || *str == '.' || *str == ',')
-		str++;
+	return (str);
+}
+
+char *skip_3num(char *str)
+{
+	str = skip_1num(str);
+	str++;
+	str = skip_1num(str);
+	str++;
+	str = skip_1num(str);
 	return (str);
 }
 
@@ -90,55 +100,79 @@ void get_resolution(t_scene *scene, char *line)
 	if (*line == 'R')
 		line++;
 	scene->width = ft_atoi(line);
-	line = skip_num(line);
+	line = skip_1num(line);
 	scene->height = ft_atoi(line);
 }
 
-float ft_atof(const char *st)
+float ft_atof(char *st)
 {
 	float	res1;
 	float	res2;
 	int 	sign;
+	int		zer;
 	char	*tmp;
 
 	sign = 1;
 	res1 = (float)ft_atoi(st);
 	res2 = 0;
+	zer = 0;
 	tmp = (char *)st;
-	if (*tmp == '-')
+	while (ft_isspace(*tmp))
+		tmp++;
+	if (*tmp == '-' || *tmp == '+')
 	{
-		sign = -1;
+		if (*tmp == '-')
+			sign = -1;
 		tmp++;
 	}
-	while (*tmp && (ft_isdigit(*tmp) || ft_isspace(*tmp)))
+	while (ft_isdigit(*tmp))
 		tmp++;
 	if (*tmp == '.')
 	{
 		tmp++;
-		res2 = (float)ft_atoi(tmp);
+		while (*tmp == '0')
+		{
+			zer++;
+			tmp++;
+		}
+		res2 += (float)ft_atoi(tmp);
 		while ((int)res2 != 0)
-		res2 /= 10;
+			res2 /= 10;
+		while (zer-- > 0)
+			res2 /= 10;
 	}
 	res2 = sign < 0 ? -res2 : res2;
 	return (res1 + res2);
 }
 
-t_vector str_to_three(const char *str)
+void	str_to_three(char *str, t_vector *new)
 {
-	t_vector new;
+	new->x = ft_atof(str);
+	str = skip_1num(str);
+	if (*str == ',')
+		str++;
+	else
+		perror("wrong symbol among triples of numbers");
+	new->y = ft_atof(str);
+	str = skip_1num(str);
+	if (*str == ',')
+		str++;
+	else
+		perror("wrong symbol among triples of numbers");
+	new->z = ft_atof(str);
+}
 
-	new.x = (float)ft_atof(str);
-	while (*str != ',')
-		str++;
-	if (*str == ',')
-		str++;
-	new.y = (float)ft_atof(str);
-	while (*str != ',')
-		str++;
-	if (*str == ',')
-		str++;
-	new.z = (float)ft_atof(str);
-	return (new);
+t_vector get_tr_normal(t_object *tr)
+{
+	t_vector u;
+	t_vector v;
+	t_vector norm;
+
+	u = vector_sub(tr->angle2, tr->origin_coord);
+	v = vector_sub(tr->angle3, tr->origin_coord);
+	norm = vector_prod(u, v);
+	normalize(&norm);
+	return (norm);
 }
 
 t_ambient get_ambient(char *line)
@@ -146,9 +180,9 @@ t_ambient get_ambient(char *line)
 	t_ambient new;
 
 	line++;
-	new.ratio = (float)ft_atof(line);
-	line = skip_num(line);
-	new.colour = str_to_three(line);
+	new.ratio = ft_atof(line);
+	line = skip_1num(line);
+	str_to_three(line, &new.colour);
 	return (new);
 }
 
@@ -161,10 +195,10 @@ t_list	*get_camera(char *line)
 	
 	if (!(new_cam = (t_camera *)malloc(sizeof(t_camera))))
 		exit_error("Could not allocate memory for camera", 1);
-	new_cam->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_cam->vector_norm = str_to_three(line);
-	line = skip_num(line);
+	str_to_three(line, &new_cam->origin_coord);
+	line = skip_3num(line);
+	str_to_three(line, &new_cam->vector_norm);
+	line = skip_3num(line);
 	new_cam->fov = ft_atoi(line);
 	if (new_cam->fov < 1)
 		exit_error("Camera FOV is wrong.", -1);
@@ -182,11 +216,11 @@ t_list *get_light(char *line)
 	line++;
 	if (!(new_light = (t_light *)malloc(sizeof(t_light))))
 		exit_error("Could not allocate memory for light", 1);
-	new_light->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_light->ratio = (float)ft_atof(line);
-	line = skip_num(line);
-	new_light->rgb = str_to_three(line);
+	str_to_three(line, &new_light->origin_coord);
+	line = skip_3num(line);
+	new_light->ratio = ft_atof(line);
+	line = skip_1num(line);
+	str_to_three(line, &new_light->rgb);
 	new = ft_lstnew(new_light);
 	return (new);
 }
@@ -200,13 +234,13 @@ t_list *get_sphere(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sp", 3);
-	new_obj->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_obj->sp_radius = (float)ft_atof(line) / 2;
+	str_to_three(line, &new_obj->origin_coord);
+	line = skip_3num(line);
+	new_obj->sp_radius = ft_atof(line) / 2;
 	if (new_obj->sp_radius <= 0)
 		exit_error("Sphere radius is too small.", -1);
-	line = skip_num(line);
-	new_obj->rgb = str_to_three(line);
+	line = skip_1num(line);
+	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
 	return (new);
 }
@@ -220,12 +254,12 @@ t_list *get_plane(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "pl", 3);
-	new_obj->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_obj->vector_norm = str_to_three(line);
+	str_to_three(line, &new_obj->origin_coord);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
-	line = skip_num(line);
-	new_obj->rgb = str_to_three(line);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
 	return (new);
 }
@@ -239,14 +273,14 @@ t_list *get_square(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sq", 3);
-	new_obj->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_obj->vector_norm = str_to_three(line);
+	str_to_three(line, &new_obj->origin_coord);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
-	line = skip_num(line);
+	line = skip_3num(line);
 	new_obj->side_size = (float)ft_atof(line);
-	line = skip_num(line);
-	new_obj->rgb = str_to_three(line);
+	line = skip_1num(line);
+	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
 	return (new);
 }
@@ -260,16 +294,16 @@ t_list *get_cylinder(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "cy", 3);
-	new_obj->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_obj->vector_norm = str_to_three(line);
+	str_to_three(line, &new_obj->origin_coord);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
-	line = skip_num(line);
+	line = skip_3num(line);
 	new_obj->cyl_d = (float)ft_atof(line);
-	line = skip_num(line);
+	line = skip_1num(line);
 	new_obj->cyl_h = (float)ft_atof(line);
-	line = skip_num(line);
-	new_obj->rgb = str_to_three(line);
+	line = skip_1num(line);
+	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
 	return (new);
 }
@@ -283,13 +317,14 @@ t_list *get_triangle(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "tr", 3);
-	new_obj->origin_coord = str_to_three(line);
-	line = skip_num(line);
-	new_obj->trian2 = str_to_three(line);
-	line = skip_num(line);
-	new_obj->trian3 = str_to_three(line);
-	line = skip_num(line);
-	new_obj->rgb = str_to_three(line);
+	str_to_three(line, &new_obj->origin_coord);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->angle2);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->angle3);
+	line = skip_3num(line);
+	str_to_three(line, &new_obj->rgb);
+	new_obj->vector_norm = get_tr_normal(new_obj);
 	new = ft_lstnew(new_obj);
 	return (new);
 }

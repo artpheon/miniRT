@@ -4,7 +4,7 @@
 
 #include "header.h"
 
-int   key_hook(int keycode, t_info *info)
+int key_hook(int keycode, t_info *info)
 {
 	if (keycode == ESC)
 	{
@@ -25,6 +25,31 @@ void start_show(t_info *info)
 	mlx_key_hook(info->win, key_hook, info);
 	put_rays(info->scene, info->mlx, info->win);
 	mlx_loop(info->mlx);
+}
+
+t_vector get_sp_plane(float width, float height, t_camera *cam)
+{
+	t_vector new;
+	float vp_width;
+	float vp_height;
+	float aspect_ratio;
+
+	aspect_ratio = width / height;
+	vp_width = tan(M_PI * 0.5 * cam->fov / 180.) * 2;
+	vp_height = vp_width / aspect_ratio;
+	new.x = vp_width / width;
+	new.y = vp_height / height;
+	new.z = -1;
+	return (new);
+}
+
+t_vector sp_normal(t_vector hit_pos, t_object *sphere)
+{
+	t_vector new;
+
+	new = vector_sub(hit_pos, sphere->origin_coord);
+	normalize(&new);
+	return (new);
 }
 
 void intersect_sp(t_ray *ray, t_object *obj, t_roots *roots)
@@ -52,148 +77,162 @@ void intersect_sp(t_ray *ray, t_object *obj, t_roots *roots)
 	}
 }
 
-t_vector get_sp_plane(float width, float height, t_camera *cam)
+void tr_solve_vars(t_tr_vars *new, t_object *o)
 {
-	t_vector new;
-	float vp_width;
-	float vp_height;
-	float aspect_ratio;
-
-	aspect_ratio = width / height;
-	vp_width = tan(M_PI * 0.5 * cam->fov / 180.) * 2;
-	vp_height = vp_width / aspect_ratio;
-	new.x = vp_width / width;
-	new.y = vp_height / height;
-	new.z = -1;
-	return (new);
+	new->u = vector_sub(o->angle2, o->origin_coord);
+	new->v = vector_sub(o->angle3, o->origin_coord);
+	new->dot_uu = dot_prod(new->u, new->u);
+	new->dot_uv = dot_prod(new->u, new->v);
+	new->dot_vv = dot_prod(new->v, new->v);
+	new->calc_d = new->dot_uv *new->dot_uv - new->dot_uu *new->dot_vv;
 }
 
-t_vector normal(t_vector hit_pos, t_object *sphere)
+int inter_as_pl(t_ray *ray, t_object *o, float *res)
 {
-	t_vector new;
+	t_vector w;
+	float a;
+	float b;
 
-	new = vector_sub(hit_pos, sphere->origin_coord);
-	normalize(&new);
-	return (new);
+	w = vector_sub(ray->orig, o->origin_coord); // t = dot(w,N)/dot(v,N)
+	a = -dot_prod(w, o->vector_norm);
+	b = dot_prod(ray->dir, o->vector_norm);
+	if (fabs(b) < macheps())
+	{
+		*res = INFINITY;
+		return (0);
+	}
+	if ((a / b) < 0)
+	{
+		*res = INFINITY;
+		return (0);
+	}
+	*res = a / b;
+	return (1);
 }
 
-//int	colour_at(t_object *sphere, t_vector pos_hit, t_vector normal, t_scene *scene)
-//{
-//	t_vector to_cam;
-//	t_vector colour = {0, 0, 0};
-//	t_ray to_light;
-//
-//	//t_vector half_vector;
-//	to_cam = vector_sub(((t_camera *)(scene->camera->content))->origin_coord, pos_hit);
-//	colour = rgb_mult_n(sphere->rgb, scene->ambl.ratio); // еще цвет амбиент
-//	to_light = set_ray(pos_hit, vector_sub(((t_light *)(scene->light->content))->origin_coord, pos_hit));
-//	float i = K_D * ((t_light *)(scene->light->content))->ratio * maxx(dot_prod(normal, to_light.dir), 0);
-//	colour = rgb_add(colour, rgb_mult_n(((t_light *)(scene->light->content))->rgb, i));
-//	//colour += ctohex(sphere->rgb) * new.diff * maxx(dot_prod(normal, to_light.dir), 0);
-//	//t_vector temp0 = v_mult_scal(sphere->rgb, maxx(dot_prod(normal, to_light.dir), 0));
-//	//colour = rgb_add(colour, temp0);
-//	//half_vector = norm_vector(vector_add(to_light.dir, to_cam));
-//	//colour += ctohex(((t_light *)(scene->light->content))->rgb) * new.spec * maxx(dot_prod(normal, half_vector), 0) * 50;
-//	//t_vector temp = v_mult_scal(((t_light *)(scene->light->content))->rgb, maxx(dot_prod(normal, half_vector), 0));
-//	//colour = rgb_add(colour, temp);
-//	return (ctohex(colour));
-//}
-
-void	cl_inter(t_closest *cl, t_ray *ray, t_list *start, t_range *range)
+void tr_solve(t_ray *r, t_object *o, t_tr_vars *p, float *res)
 {
-	t_roots		roots;
-	t_list		*temp;
+	t_vector point;
+	t_vector w;
+	float wu;
+	float wv;
+	float s;
+	float t;
+
+	point = vector_add(r->orig, v_mult_scal(r->dir, *res));
+	w = vector_sub(point, o->origin_coord);
+	wu = dot_prod(w, p->u);
+	wv = dot_prod(w, p->v);
+	s = (p->dot_uv * wv - p->dot_vv * wu) / p->calc_d;
+	if (s < 0.0 || s > 1.0) // I is outside T
+	{
+		*res = INFINITY;
+		return;
+	}
+	t = (p->dot_uv * wu - p->dot_uu * wv) / p->calc_d;
+	if (t < 0.0 || (s + t) > 1.0) // I is outside T
+		*res = INFINITY;
+}
+
+void intersect_tr(t_ray *ray, t_object *obj, float *res)
+{
+	t_tr_vars new;
+	float t;
+
+	tr_solve_vars(&new, obj);		  //считаем доп.параметры
+	if (inter_as_pl(ray, obj, &t))	  //если пересекло плоскость в кот.лежит 3-уг
+		tr_solve(ray, obj, &new, &t); //находим точку пересечения
+	*res = t;
+}
+
+void intersect_pl(t_ray *ray, t_object *obj, float *res)
+{
+	float r;
+
+	inter_as_pl(ray, obj, &r);
+	*res = r;
+}
+
+void cl_inter(t_closest *cl, t_ray *ray, t_list *start, int shadow)
+{
+	t_roots roots;
+	float resol;
+	t_list *temp;
+	t_range range;
 
 	cl->closest_t = INFINITY;
 	cl->closest_obj = NULL;
+	if (shadow)
+		range.t_min = 0.0015;
+	else
+		range.t_min = 0;
+	range.t_max = INFINITY;
 	temp = start;
 	while (temp)
 	{
-		intersect_sp(ray, temp->content, &roots);
-		if (roots.t1 >= range->t_min && roots.t1 < range->t_max &&
-			roots.t1 < cl->closest_t)
+		if (typecmp("sp", temp->content))
 		{
-			cl->closest_t = roots.t1;
-			cl->closest_obj = temp->content;
+			intersect_sp(ray, temp->content, &roots);
+			if (shadow)
+				range.t_max = 1;
+			if (roots.t1 >= range.t_min && roots.t1 < range.t_max &&
+				roots.t1 < cl->closest_t)
+			{
+				cl->closest_t = roots.t1;
+				cl->closest_obj = temp->content;
+			}
+			if (roots.t2 >= range.t_min && roots.t2 < range.t_max &&
+				roots.t2 < cl->closest_t)
+			{
+				cl->closest_t = roots.t2;
+				cl->closest_obj = temp->content;
+			}
 		}
-		if (roots.t2 >= range->t_min && roots.t2 < range->t_max &&
-			roots.t2 < cl->closest_t)
+		if (typecmp("tr", temp->content))
 		{
-			cl->closest_t = roots.t2;
-			cl->closest_obj = temp->content;
+			intersect_tr(ray, temp->content, &resol);
+			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			{
+				cl->closest_t = resol;
+				cl->closest_obj = temp->content;
+			}
+		}
+		if (typecmp("pl", temp->content))
+		{
+			if (shadow)
+				range.t_max = 1;
+			intersect_pl(ray, temp->content, &resol);
+			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			{
+				cl->closest_t = resol;
+				cl->closest_obj = temp->content;
+			}
+		}
+		if (typecmp("sq", temp->content))
+		{
+			intersect_sq(ray, temp->content, &resol);
+			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			{
+				cl->closest_t = resol;
+				cl->closest_obj = temp->content;
+			}
 		}
 		temp = temp->next;
 	}
 }
 
-/*
-float calc_lighting(t_scene *scene, t_hit *hit, t_ray *ray)
+void get_hit_sp(t_hit *hit, t_closest *cl, t_ray *ray)
 {
-	float		i;
-	t_list		*light;
-	t_vector	v_to_lgt;
-	t_vector	refl;
-	t_closest	cl_sh;
-	t_list		*obj;
-	t_range		range;
-	t_ray 		r_to_lgt;
-	float		n_dot_l;
-	float 		r_dot_v;
-	float		temp;
-
-
-	light = scene->light;
-	range.t_min = macheps();
-	range.t_max = 1;
-	cl_sh.closest_obj = NULL;
-	cl_sh.closest_t = INFINITY;
-	obj = scene->object;
-	i = scene->ambl.ratio;
-	while (light)
-	{
-		v_to_lgt = vector_sub(((t_light *)(light->content))->origin_coord, hit->hit_pos);
-		r_to_lgt = set_ray(hit->hit_pos, v_to_lgt);
-		while (obj)
-		{
-			cl_inter(&cl_sh, &r_to_lgt, obj, &range);
-			obj = obj->next;
-		}
-		if (cl_sh.closest_obj != NULL)
-		{
-			light = light->next;
-			continue;
-		}
-		n_dot_l = dot_prod(hit->hit_normal, v_to_lgt);
-		if (n_dot_l > 0)
-		{
-			i += ((t_light *)(light->content))->ratio * fmaxf(n_dot_l, 0) /
-				 (vector_length(v_to_lgt) * vector_length(v_to_lgt)); // * vector_length(hit->hit_normal)
-		}
-		//	R = 2N <N,L> - L
-		//  R - reflection vector, N - normal, L - to_lgt
-		//  Is = Il * (dot(R,V) / |R|*|V|)^s
-		//  Is - i, Il - light ratio, V - negative ray.direction
-		refl = v_mult_scal(hit->hit_normal, 2);
-		refl = v_mult_scal(refl, n_dot_l);
-		refl = vector_sub(refl, v_to_lgt);
-		r_dot_v = dot_prod(refl, v_mult_scal(ray->dir, -1));
-		if (r_dot_v > 0)
-		{
-			temp = vector_length(refl) *
-				   vector_length(v_mult_scal(ray->dir, -1));
-			temp = r_dot_v / temp;
-			i += ((t_light *) (light->content))->ratio * powf(temp, 10);
-		}
-		light = light->next;
-	}
-	return (i);
-}*/
-
-void get_hit_sp(t_hit *hit, t_closest *closest, t_ray *ray)
-{
-	hit->hit_dist = closest->closest_t;
+	hit->hit_dist = cl->closest_t;
 	hit->hit_pos = vector_add(ray->orig, v_mult_scal(ray->dir, hit->hit_dist));
-	hit->hit_normal = normal(hit->hit_pos, closest->closest_obj);
+	hit->hit_normal = sp_normal(hit->hit_pos, cl->closest_obj);
+}
+
+void get_hit_tr(t_hit *hit, t_closest *cl, t_ray *ray)
+{
+	hit->hit_dist = cl->closest_t;
+	hit->hit_pos = vector_add(ray->orig, v_mult_scal(ray->dir, hit->hit_dist));
+	hit->hit_normal = cl->closest_obj->vector_norm; // здесь всё ок
 }
 /*
 int calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y)
@@ -227,85 +266,31 @@ int calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y)
 	return (colour);
 }*/
 
-
-
-/* //working
-int calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y)
+float l_shading(t_hit *hit, t_light *light, t_closest *cl)
 {
-	int			colour;
-	float		light;
-	t_ray		ray;
-	t_list		*start;
-	t_object	*closest_obj;
-	float		closest_t;
-	t_roots		roots;
-	t_hit		new_hit;
+	float l_coef;
+	float l_intens;
+	float n_dot_l;
+	t_vector v_to_lght;
 
-
-	start = scene->object;
-	closest_obj = NULL;
-	closest_t = INFINITY;
-	ray = set_ray(((t_camera *)(scene->camera->content))->origin_coord,
-			   set_vector(plane->x * vp_x, plane->y * vp_y, -1));
-	while (start)
-	{
-		if (0 == ft_strncmp(((t_object *)(start->content))->type, "sp", 2))
-		{
-			intersect_sp(&ray, start->content, &roots);
-			if (roots.t1 >= 1 && roots.t1 < INFINITY && roots.t1 < closest_t)
-			{
-				closest_t = roots.t1;
-				closest_obj = start->content;
-			}
-			if (roots.t2 >= 1 && roots.t2 < INFINITY && roots.t2 < closest_t)
-			{
-				closest_t = roots.t2;
-				closest_obj = start->content;
-			}
-		}
-		start = start->next;
-	}
-	if (closest_obj == NULL)
-		colour = 0xDC143C;
-	else
-	{
-		get_hit_sp(&new_hit, closest_obj, closest_t, &ray);
-		light = calc_lighting(scene, &new_hit);
-		colour = ctohex(rgb_mult_n(closest_obj->rgb, light));
-	}
-	return (colour);
-}*/
-
-float	l_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
-{
-	float		l_coef;
-	float		l_intens;
-	float		n_dot_l;
-	t_vector	v_to_lght;
-
-	//l_coef = K_D * (I / r^2) * fmaxf(0, n * l);
-	// r - vector to light
 	l_coef = 0;
 	v_to_lght = vector_sub(light->origin_coord,
-							hit->hit_pos);
+						   hit->hit_pos);
 	l_intens = light->ratio;
-	//l_intens /= powf(vector_length(v_to_lght), 2);
 	n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
 	if (n_dot_l > 0)
-		l_coef += l_intens * n_dot_l / (vector_length(hit->hit_normal) *
-										vector_length(v_to_lght));
-	//l_coef = K_D * l_intens * fmaxf(0, n_dot_l);
+		l_coef += l_intens * n_dot_l / (vector_length(hit->hit_normal) * vector_length(v_to_lght));
 	return (l_coef);
 }
 
-float	s_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
+float s_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
 {
-	float		coef;
-	float		n_dot_l;
-	float		r_dot_v;
-	t_vector	v_to_lght;
-	t_vector	refl;
-	t_vector	v;
+	float coef;
+	float n_dot_l;
+	float r_dot_v;
+	t_vector v_to_lght;
+	t_vector refl;
+	t_vector v;
 
 	coef = 0;
 	v_to_lght = vector_sub(light->origin_coord, hit->hit_pos);
@@ -319,88 +304,82 @@ float	s_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
 	return (coef);
 }
 
-//n_dot_l = dot_prod(hit->hit_normal, v_to_lgt);
-//if (n_dot_l > 0)
-//{
-//i += ((t_light *)(light->content))->ratio * fmaxf(n_dot_l, 0) /
-//(vector_length(v_to_lgt) * vector_length(v_to_lgt)); // * vector_length(hit->hit_normal)
-//}
-
-
-int 	in_shad(t_scene *sc, t_light *light, t_hit *hit)
+int in_shad(t_scene *sc, t_light *light, t_hit *hit)
 {
-	t_range		sh_range;
-	t_closest	shadow;
-	t_vector	v_to_light;
-	t_ray		r_to_light;
+	t_closest shadow;
+	t_vector v_to_light;
+	t_ray r_to_light;
 
-	sh_range.t_min = 0.001;
-	sh_range.t_max = 1;
+	//sh_range.t_min = 0.0015;
+	//sh_range.t_max = 1;
 	v_to_light = vector_sub(light->origin_coord, hit->hit_pos);
 	r_to_light = set_ray(hit->hit_pos, v_to_light);
-	cl_inter(&shadow, &r_to_light, sc->object, &sh_range); //ClosestIntersection(P, L, 0.001, t_max)
+	cl_inter(&shadow, &r_to_light, sc->object, 1); //ClosestIntersection(P, L, 0.001, t_max)
 	if (shadow.closest_obj)
+	{
 		return (1);
+	}
 	return (0);
 }
 
-t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray)
+t_vector calc_light(t_closest *cl, t_scene *scene, t_ray *ray)
 {
-	t_vector	rgb;
-	t_vector	temp;
-	t_hit		hit;
-	t_list		*light;
-	float		coef;
+	t_vector rgb;
+	t_vector temp;
+	t_hit hit;
+	t_list *light;
+	float coef;
 
 	light = scene->light;
-	get_hit_sp(&hit, cl, ray);
-	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio);
-	while(light)
-	{	
+	if (typecmp("sp", cl->closest_obj))
+		get_hit_sp(&hit, cl, ray);
+	if (typecmp("tr", cl->closest_obj))
+		get_hit_tr(&hit, cl, ray);
+	if (typecmp("pl", cl->closest_obj))
+		get_hit_tr(&hit, cl, ray);
+	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio); // ok
+	while (light)
+	{
 		if (in_shad(scene, light->content, &hit))
 		{
 			light = light->next;
 			continue;
 		}
-		coef = l_shading(&hit, light->content, ray, cl);
-		coef += s_shading(&hit, light->content, ray, cl);
+		coef = l_shading(&hit, light->content, cl);
+		if (typecmp("sp", cl->closest_obj))
+			coef += s_shading(&hit, light->content, ray, cl);
 		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
 		rgb = rgb_add(rgb, temp);
 		light = light->next;
 	}
-	return(rgb);
+	return (rgb);
 }
 
-t_vector	ray_trace(t_ray *ray, t_scene *scene)
+int		ray_trace(t_ray *ray, t_scene *scene)
 {
-	t_vector	rgb;
-	//float		coef;
-	t_closest	cl;
-	//t_hit		hit;
-	t_range		range;
-	//t_vector	temp;
+	t_vector rgb;
+	t_closest cl;
+	t_range range;
 
 	range.t_min = 1;
 	range.t_max = INFINITY;
-	cl_inter(&cl, ray, scene->object, &range);
+	cl_inter(&cl, ray, scene->object, 0);
 	if (cl.closest_obj == NULL)
-		return (hextoc(BG_COLOUR));
+		return (BG_COLOUR);
 	else
-	{
 		rgb = calc_light(&cl, scene, ray);
-	}
-	return (rgb);
+	return (ctohex(rgb));
 }
 
 void put_rays(t_scene *scene, void *mlx, void *win)
 {
-	int			canvas_x;
-	int			canvas_y;
-	float		vp_x;
-	float		vp_y;
-	int			colour;
-	t_vector	plane;
-	t_ray		ray;
+	int canvas_x;
+	int canvas_y;
+	float vp_x;
+	float vp_y;
+	int colour;
+	t_vector plane;
+	t_ray ray;
 
 	plane = get_sp_plane(scene->width, scene->height, scene->camera->content);
 	canvas_y = 0;
@@ -414,7 +393,7 @@ void put_rays(t_scene *scene, void *mlx, void *win)
 			ray = set_ray(((t_camera *)(scene->camera->content))->origin_coord,
 						  set_vector(plane.x * vp_x, plane.y * vp_y, plane.z));
 			//colour = calc_colour(scene, &plane, vp_x, vp_y); //fixme
-			colour = ctohex(ray_trace(&ray, scene));
+			colour = ray_trace(&ray, scene);
 			mlx_pixel_put(mlx, win, canvas_x, canvas_y, colour);
 			vp_x++;
 			canvas_x++;

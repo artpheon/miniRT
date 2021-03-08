@@ -27,7 +27,7 @@ t_ray set_ray(t_vector origin, t_vector dir)
 
     new.orig = origin;
     new.dir = dir;
-    normalize(&(new.dir));
+    normalize(&new.dir);
     return (new);
 }
 
@@ -87,6 +87,13 @@ void exit_error(char *message, int errn)
 {
     perror(message);
     exit(errn);
+}
+
+int typecmp(char *t, t_object *o)
+{
+    if (ft_strncmp(o->type, t, 2) == 0)
+        return (1);
+    return (0);
 }
 /*
 char	*screenshot_datetime()

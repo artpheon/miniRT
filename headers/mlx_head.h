@@ -48,6 +48,18 @@ typedef struct s_range
 	float t_max;
 }				t_range;
 
+typedef struct	s_tr_vars
+{
+	t_vector	u;
+	t_vector	v;
+	t_vector	normal;
+	float		dot_uu;
+	float		dot_uv;
+	float		dot_vv;
+	float		calc_a;
+	float		calc_d;
+}				t_tr_vars;
+
 t_vplane	get_new_plane(float width, float height, float fov);
 void		intersect_sp(t_ray *ray, t_object *obj, t_roots *roots);
 void		put_rays(t_scene *scene, void *mlx, void *win);

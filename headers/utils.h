@@ -5,3 +5,4 @@ t_vector set_nvector(float x, float y, float z);
 int ctohex(t_vector rgb);
 t_vector hextoc(int hex);
 float macheps(void);
+int typecmp(char *t, t_object *o);
