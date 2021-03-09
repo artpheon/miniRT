@@ -14,14 +14,6 @@ typedef struct s_data
 	int     endian;
 }				t_data;
 
-typedef struct s_vplane
-{
-	float width;
-	float height;
-	float x_pixel;
-	float y_pixel;
-}				t_vplane;
-
 typedef struct  s_info {
     t_data	*img;
     void    *mlx;
@@ -60,8 +52,19 @@ typedef struct	s_tr_vars
 	float		calc_d;
 }				t_tr_vars;
 
-t_vplane	get_new_plane(float width, float height, float fov);
-void		intersect_sp(t_ray *ray, t_object *obj, t_roots *roots);
+typedef struct	s_cy_vars
+{
+	t_vector	cross;
+	t_vector	sub;
+	float		a;
+	float		b;
+	float		c;
+	float		det;
+	float 		t1;
+	float 		t2;
+}				t_cy_vars;
+
+void		intersect_sp(t_ray *ray, t_object *obj, float *res, float t);
 void		put_rays(t_scene *scene, void *mlx, void *win);
 void		start_show(t_info *info);
 int			calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y);

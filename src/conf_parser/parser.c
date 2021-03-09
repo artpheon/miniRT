@@ -58,12 +58,21 @@ t_scene *alloc_scene()
 
 void	p_check_n(t_vector *n)
 {
+	print_vector(*n);
 	if (n->x > 1 || n->x < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
 	if (n->y > 1 || n->y < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
 	if (n->z > 1 || n->z < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
+}
+
+void 	lr_check(float f)
+{
+	if (f < 0)
+		exit_error("ratio value is too low", -1);
+	if (f > 1)
+		exit_error("ratio value is too big", -1);
 }
 
 char *skip_1num(char *str)
@@ -135,7 +144,8 @@ float ft_atof(char *st)
 			zer++;
 			tmp++;
 		}
-		res2 += (float)ft_atoi(tmp);
+		if (ft_isdigit(*tmp))
+			res2 += (float)ft_atoi(tmp);
 		while ((int)res2 != 0)
 			res2 /= 10;
 		while (zer-- > 0)
@@ -152,13 +162,13 @@ void	str_to_three(char *str, t_vector *new)
 	if (*str == ',')
 		str++;
 	else
-		perror("wrong symbol among triples of numbers");
+		exit_error("wrong symbol among triples of numbers", -1);
 	new->y = ft_atof(str);
 	str = skip_1num(str);
 	if (*str == ',')
 		str++;
 	else
-		perror("wrong symbol among triples of numbers");
+		exit_error("wrong symbol among triples of numbers", -1);
 	new->z = ft_atof(str);
 }
 
@@ -172,6 +182,9 @@ t_vector get_tr_normal(t_object *tr)
 	v = vector_sub(tr->angle3, tr->origin_coord);
 	norm = vector_prod(u, v);
 	normalize(&norm);
+	if (norm.z < 0)
+		norm = v_mult_scal(norm, -1); // fixme if camera is behind
+	print_vector(norm);
 	return (norm);
 }
 
@@ -181,6 +194,7 @@ t_ambient get_ambient(char *line)
 
 	line++;
 	new.ratio = ft_atof(line);
+	lr_check(new.ratio);
 	line = skip_1num(line);
 	str_to_three(line, &new.colour);
 	return (new);
@@ -198,9 +212,10 @@ t_list	*get_camera(char *line)
 	str_to_three(line, &new_cam->origin_coord);
 	line = skip_3num(line);
 	str_to_three(line, &new_cam->vector_norm);
+	normalize(&new_cam->vector_norm);
 	line = skip_3num(line);
 	new_cam->fov = ft_atoi(line);
-	if (new_cam->fov < 1)
+	if (new_cam->fov < 1 || new_cam->fov > 180)
 		exit_error("Camera FOV is wrong.", -1);
 	if (new_cam->fov < 35)
 		perror("Camera FOV might be too low.");
@@ -219,6 +234,7 @@ t_list *get_light(char *line)
 	str_to_three(line, &new_light->origin_coord);
 	line = skip_3num(line);
 	new_light->ratio = ft_atof(line);
+	lr_check(new_light->ratio);
 	line = skip_1num(line);
 	str_to_three(line, &new_light->rgb);
 	new = ft_lstnew(new_light);
@@ -258,6 +274,7 @@ t_list *get_plane(char *line)
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
+	normalize(&new_obj->vector_norm);
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
@@ -277,6 +294,7 @@ t_list *get_square(char *line)
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
+	normalize(&new_obj->vector_norm);
 	line = skip_3num(line);
 	new_obj->side_size = (float)ft_atof(line);
 	line = skip_1num(line);
@@ -298,6 +316,7 @@ t_list *get_cylinder(char *line)
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->vector_norm);
 	p_check_n(&new_obj->vector_norm);
+	normalize(&new_obj->vector_norm);
 	line = skip_3num(line);
 	new_obj->cyl_d = (float)ft_atof(line);
 	line = skip_1num(line);
@@ -307,6 +326,18 @@ t_list *get_cylinder(char *line)
 	new = ft_lstnew(new_obj);
 	return (new);
 }
+
+int		v3cmp(t_vector v1, t_vector v2)
+{
+	if (v1.x == v2.x &&
+		v1.y == v2.y &&
+		v1.z == v2.z)
+		return (1);
+	else
+		return (0);
+}
+
+//fixme
 
 t_list *get_triangle(char *line)
 {

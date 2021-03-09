@@ -35,7 +35,7 @@ t_vector get_sp_plane(float width, float height, t_camera *cam)
 	float aspect_ratio;
 
 	aspect_ratio = width / height;
-	vp_width = tan(M_PI * 0.5 * cam->fov / 180.) * 2;
+	vp_width = tanf(M_PI * 0.5 * cam->fov / 180.) * 2;
 	vp_height = vp_width / aspect_ratio;
 	new.x = vp_width / width;
 	new.y = vp_height / height;
@@ -43,37 +43,28 @@ t_vector get_sp_plane(float width, float height, t_camera *cam)
 	return (new);
 }
 
-t_vector sp_normal(t_vector hit_pos, t_object *sphere)
+void intersect_sp(t_ray *ray, t_object *obj, float *res, float t)
 {
-	t_vector new;
-
-	new = vector_sub(hit_pos, sphere->origin_coord);
-	normalize(&new);
-	return (new);
-}
-
-void intersect_sp(t_ray *ray, t_object *obj, t_roots *roots)
-{
-	t_vector sp_to_ray;
-	float b;
-	float c;
-	float discriminant;
-	float a;
+	t_vector	sp_to_ray;
+	float		b;
+	float		c;
+	float		discriminant;
+	float		root;
 
 	sp_to_ray = vector_sub(ray->orig, obj->origin_coord);
-	a = dot_prod(ray->dir, ray->dir);
 	b = 2 * dot_prod(ray->dir, sp_to_ray);
 	c = dot_prod(sp_to_ray, sp_to_ray) - (obj->sp_radius * obj->sp_radius);
-	discriminant = (b * b) - (4 * a * c);
+	discriminant = (b * b) - (4 * c);
+	*res = INFINITY;
 	if (discriminant >= 0)
 	{
-		roots->t1 = (-b + sqrtf(discriminant)) / 2;
-		roots->t2 = (-b - sqrtf(discriminant)) / 2;
-	}
-	else
-	{
-		roots->t1 = INFINITY;
-		roots->t2 = INFINITY;
+		discriminant = sqrtf(discriminant);
+		root = (-b + discriminant) / 2;
+		if (root >= 0 && root < t)
+			*res = root;
+		root = (-b - discriminant) / 2;
+		if (root >= 0 && root < t)
+			*res = root;
 	}
 }
 
@@ -89,55 +80,62 @@ void tr_solve_vars(t_tr_vars *new, t_object *o)
 
 int inter_as_pl(t_ray *ray, t_object *o, float *res)
 {
-	t_vector w;
-	float a;
-	float b;
+	t_vector	w;
+	float		a;
+	float		det;
 
 	w = vector_sub(ray->orig, o->origin_coord); // t = dot(w,N)/dot(v,N)
 	a = -dot_prod(w, o->vector_norm);
-	b = dot_prod(ray->dir, o->vector_norm);
-	if (fabs(b) < macheps())
+	//if (dot_prod(ray->dir, o->vector_norm) >= 0)
+	//	o->vector_norm = v_mult_scal(o->vector_norm, -1);
+	det = dot_prod(ray->dir, o->vector_norm);
+	if (fabsf(det) < macheps())
 	{
 		*res = INFINITY;
 		return (0);
 	}
-	if ((a / b) < 0)
+	if ((a / det) < 0)
 	{
 		*res = INFINITY;
 		return (0);
 	}
-	*res = a / b;
+	*res = a / det;
 	return (1);
 }
 
 void tr_solve(t_ray *r, t_object *o, t_tr_vars *p, float *res)
 {
-	t_vector point;
-	t_vector w;
-	float wu;
-	float wv;
-	float s;
-	float t;
+	t_vector	pvec;
+	t_vector	tvec;
+	float		det;
+	float		c;
+	float		a;
+	float		b;
 
-	point = vector_add(r->orig, v_mult_scal(r->dir, *res));
-	w = vector_sub(point, o->origin_coord);
-	wu = dot_prod(w, p->u);
-	wv = dot_prod(w, p->v);
-	s = (p->dot_uv * wv - p->dot_vv * wu) / p->calc_d;
-	if (s < 0.0 || s > 1.0) // I is outside T
+	pvec = vector_prod(r->dir, p->v);
+	det = dot_prod(p->u, pvec);
+	c = 1 / det;
+	tvec = vector_sub(r->orig, o->origin_coord);
+	a = dot_prod(tvec, pvec) * c;
+	if (a < 0 || a > 1)
 	{
 		*res = INFINITY;
-		return;
+		return ;
 	}
-	t = (p->dot_uv * wu - p->dot_uu * wv) / p->calc_d;
-	if (t < 0.0 || (s + t) > 1.0) // I is outside T
+	tvec = vector_prod(tvec, p->u);
+	b  = dot_prod(r->dir, tvec) * c;
+	if (b < 0 || (a + b) > 1)
+	{
 		*res = INFINITY;
+		return ;
+	}
+	*res = dot_prod(p->v, tvec) * c;
 }
 
 void intersect_tr(t_ray *ray, t_object *obj, float *res)
 {
-	t_tr_vars new;
-	float t;
+	t_tr_vars	new;
+	float		t;
 
 	tr_solve_vars(&new, obj);		  //считаем доп.параметры
 	if (inter_as_pl(ray, obj, &t))	  //если пересекло плоскость в кот.лежит 3-уг
@@ -147,51 +145,135 @@ void intersect_tr(t_ray *ray, t_object *obj, float *res)
 
 void intersect_pl(t_ray *ray, t_object *obj, float *res)
 {
-	float r;
+	float	r;
 
 	inter_as_pl(ray, obj, &r);
 	*res = r;
 }
 
-void cl_inter(t_closest *cl, t_ray *ray, t_list *start, int shadow)
+void intersect_sq(t_ray *ray, t_object *obj, float *res)
 {
-	t_roots roots;
-	float resol;
-	t_list *temp;
-	t_range range;
+	float	t;
+	float denom, hht;
+	t_vector p0, hpos;
+
+	t = INFINITY;
+	if (inter_as_pl(ray, obj, &t))
+	{
+		/*a = dot_prod(vector_sub(ray->orig, obj->origin_coord), obj->vector_norm);
+		b = dot_prod(ray->dir, obj->vector_norm);
+		if (b == 0 || (a < 0 && b < 0) || (a > 0 && b > 0))
+			return ;
+		t1 = -a / b;
+		d = vector_sub(vector_add(v_mult_scal(ray->dir, t1), ray->orig), obj->origin_coord);
+		t2 = obj->side_size / 2;
+		if (fabsf(d.x) > t2 || fabsf(d.y) > t2 || fabsf(d.z) > t2)
+			return ;
+		if (t1 > 0)
+			*res = t1;*/
+
+		denom = dot_prod(obj->vector_norm, ray->dir);
+		p0 = vector_sub(obj->origin_coord, ray->orig);
+		t = dot_prod(p0, obj->vector_norm) / denom;
+		hpos = vector_add(ray->orig, v_mult_scal(ray->dir, t));
+		if (t < 0)
+			t = INFINITY;
+		else
+		{
+			hht = obj->side_size / 2;
+			if (fabsf(hpos.x - obj->origin_coord.x) > hht ||
+				fabsf(hpos.y - obj->origin_coord.y) > hht ||
+				fabsf(hpos.z - obj->origin_coord.z) > hht)
+				t = INFINITY;
+		}
+	} //fixme wrong formula
+	*res = t;
+}
+
+void cy_as_pl(t_object *o, t_vector inter, t_vector dir, float *ttemp)
+{
+	float a;
+	float b;
+	float troot;
+
+	a = dot_prod(vector_sub(inter, o->origin_coord), o->vector_norm);
+	b = dot_prod(dir, o->vector_norm);
+	if (b == 0 || (a < 0 && b < 0) || (a > 0 && b > 0))
+		return ;
+	troot = -a / b;
+	if (troot < 0 || *ttemp < troot)
+		return ;
+	*ttemp = troot;
+}
+
+int cy_solve(t_ray *r, t_object *o, t_cy_vars *p)
+{
+	t_vector tmp;
+
+	p->cross = vector_prod(r->dir, o->vector_norm);
+	p->sub = vector_sub(r->orig, o->origin_coord);
+	tmp = vector_prod(p->sub, o->vector_norm);
+	p->a = dot_prod(p->cross, p->cross);
+	p->b = 2 * dot_prod(p->cross, tmp);
+	p->c = dot_prod(tmp, tmp) - powf(o->cyl_d / 2, 2) * dot_prod(o->vector_norm, o->vector_norm);
+	p->det = powf(p->b, 2) - (4 * p->a * p->c);
+	if (p->det < 0)
+		return (0);
+	p->a = 2 * p->a;
+	p->det = sqrtf(p->det);
+	p->t1 = (-p->b - p->det) / p->a;
+	p->t2 = (-p->b + p->det) / p->a;
+	return (1);
+}
+void intersect_cy(t_ray *ray, t_object *obj, float *res)
+{
+	t_cy_vars	p;
+	t_vector	inter;
+	float 		t;
+	float 		ttmp;
+
+	if (cy_solve(ray, obj, &p))
+	{
+		t = INFINITY;
+		if (p.t1 >= 0 && *res > p.t1)
+			t = p.t1;
+		if (p.t2 >= 0 && *res > p.t2)
+			t = p.t2;
+		if (t == INFINITY)
+			return ;
+		inter = vector_add(ray->orig, v_mult_scal(ray->dir, t));
+		ttmp = INFINITY;
+		cy_as_pl(obj, inter, obj->vector_norm, &ttmp);
+		ttmp <= obj->cyl_h / 2 ? *res = t : INFINITY; //infinity?
+		cy_as_pl(obj, inter, v_mult_scal(obj->vector_norm, -1), &ttmp);
+		ttmp <= obj->cyl_h / 2 ? *res = t : INFINITY; //infinity?
+	}
+}
+
+void cl_inter(t_closest *cl, t_ray *ray, t_list *start, t_range *range)
+{
+	float	resol;
+	t_list	*temp;
 
 	cl->closest_t = INFINITY;
+	resol = INFINITY;
 	cl->closest_obj = NULL;
-	if (shadow)
-		range.t_min = 0.0015;
-	else
-		range.t_min = 0;
-	range.t_max = INFINITY;
 	temp = start;
 	while (temp)
 	{
 		if (typecmp("sp", temp->content))
 		{
-			intersect_sp(ray, temp->content, &roots);
-			if (shadow)
-				range.t_max = 1;
-			if (roots.t1 >= range.t_min && roots.t1 < range.t_max &&
-				roots.t1 < cl->closest_t)
+			intersect_sp(ray, temp->content, &resol, cl->closest_t);
+			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
-				cl->closest_t = roots.t1;
-				cl->closest_obj = temp->content;
-			}
-			if (roots.t2 >= range.t_min && roots.t2 < range.t_max &&
-				roots.t2 < cl->closest_t)
-			{
-				cl->closest_t = roots.t2;
+				cl->closest_t = resol;
 				cl->closest_obj = temp->content;
 			}
 		}
 		if (typecmp("tr", temp->content))
 		{
 			intersect_tr(ray, temp->content, &resol);
-			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
 				cl->closest_obj = temp->content;
@@ -199,10 +281,8 @@ void cl_inter(t_closest *cl, t_ray *ray, t_list *start, int shadow)
 		}
 		if (typecmp("pl", temp->content))
 		{
-			if (shadow)
-				range.t_max = 1;
 			intersect_pl(ray, temp->content, &resol);
-			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
 				cl->closest_obj = temp->content;
@@ -211,7 +291,16 @@ void cl_inter(t_closest *cl, t_ray *ray, t_list *start, int shadow)
 		if (typecmp("sq", temp->content))
 		{
 			intersect_sq(ray, temp->content, &resol);
-			if (resol >= range.t_min && resol < cl->closest_t && resol < range.t_max)
+			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
+			{
+				cl->closest_t = resol;
+				cl->closest_obj = temp->content;
+			}
+		}
+		if (typecmp("cy", temp->content))
+		{
+			intersect_cy(ray, temp->content, &resol);
+			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
 				cl->closest_obj = temp->content;
@@ -225,53 +314,26 @@ void get_hit_sp(t_hit *hit, t_closest *cl, t_ray *ray)
 {
 	hit->hit_dist = cl->closest_t;
 	hit->hit_pos = vector_add(ray->orig, v_mult_scal(ray->dir, hit->hit_dist));
-	hit->hit_normal = sp_normal(hit->hit_pos, cl->closest_obj);
+	hit->hit_normal = vector_sub(hit->hit_pos, cl->closest_obj->origin_coord);
+	normalize(&hit->hit_normal);
 }
 
 void get_hit_tr(t_hit *hit, t_closest *cl, t_ray *ray)
 {
 	hit->hit_dist = cl->closest_t;
 	hit->hit_pos = vector_add(ray->orig, v_mult_scal(ray->dir, hit->hit_dist));
-	hit->hit_normal = cl->closest_obj->vector_norm; // здесь всё ок
-}
-/*
-int calc_colour(t_scene *scene, t_vector *plane, float vp_x, float vp_y)
-{
-	int			colour;
-	float		light;
-	t_ray		ray;
-	t_list		*start;
-	t_hit		hit;
-	t_closest 	cl;
-	t_range 	range;
-
-	cl.closest_t = INFINITY;
-	cl.closest_obj = NULL;
-	start = scene->object;
-
-	range.t_max = INFINITY;
-	range.t_min = 1;
-	cl_inter(&cl, &ray, start, &range);
-	//if (0 == ft_strncmp(((t_object *)(start->content))->type, "sp", 2))
-	//	;
-	if (cl.closest_obj == NULL)
-		colour = BG_COLOUR;
+	if (dot_prod(ray->dir, cl->closest_obj->vector_norm) > 0)
+		hit->hit_normal = v_mult_scal(cl->closest_obj->vector_norm, -1);
 	else
-	{
-		get_hit_sp(&hit, &cl, &ray);
-		//light = calc_lighting(scene, &new_hit, &ray);
-		light = scene->ambl.ratio;
-		colour = ctohex(rgb_mult_n(cl.closest_obj->rgb, light));
-	}
-	return (colour);
-}*/
+		hit->hit_normal = cl->closest_obj->vector_norm;
+}
 
-float l_shading(t_hit *hit, t_light *light, t_closest *cl)
+float l_shading(t_hit *hit, t_light *light)
 {
-	float l_coef;
-	float l_intens;
-	float n_dot_l;
-	t_vector v_to_lght;
+	float		l_coef;
+	float		l_intens;
+	float		n_dot_l;
+	t_vector	v_to_lght;
 
 	l_coef = 0;
 	v_to_lght = vector_sub(light->origin_coord,
@@ -283,7 +345,7 @@ float l_shading(t_hit *hit, t_light *light, t_closest *cl)
 	return (l_coef);
 }
 
-float s_shading(t_hit *hit, t_light *light, t_ray *ray, t_closest *cl)
+float s_shading(t_hit *hit, t_light *light, t_ray *ray)
 {
 	float coef;
 	float n_dot_l;
@@ -309,12 +371,13 @@ int in_shad(t_scene *sc, t_light *light, t_hit *hit)
 	t_closest shadow;
 	t_vector v_to_light;
 	t_ray r_to_light;
+	t_range	sh_range;
 
-	//sh_range.t_min = 0.0015;
-	//sh_range.t_max = 1;
+	sh_range.t_min = 0.0015;
+	sh_range.t_max = vector_dist(hit->hit_pos, light->origin_coord);
 	v_to_light = vector_sub(light->origin_coord, hit->hit_pos);
 	r_to_light = set_ray(hit->hit_pos, v_to_light);
-	cl_inter(&shadow, &r_to_light, sc->object, 1); //ClosestIntersection(P, L, 0.001, t_max)
+	cl_inter(&shadow, &r_to_light, sc->object, &sh_range); //ClosestIntersection(P, L, 0.001, t_max)
 	if (shadow.closest_obj)
 	{
 		return (1);
@@ -322,52 +385,59 @@ int in_shad(t_scene *sc, t_light *light, t_hit *hit)
 	return (0);
 }
 
-t_vector calc_light(t_closest *cl, t_scene *scene, t_ray *ray)
+t_vector calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit)
 {
-	t_vector rgb;
-	t_vector temp;
-	t_hit hit;
-	t_list *light;
-	float coef;
+	t_vector	rgb;
+	t_vector	temp;
+	t_list		*light;
+	float		coef;
 
 	light = scene->light;
 	if (typecmp("sp", cl->closest_obj))
-		get_hit_sp(&hit, cl, ray);
+		get_hit_sp(hit, cl, ray);
 	if (typecmp("tr", cl->closest_obj))
-		get_hit_tr(&hit, cl, ray);
+		get_hit_tr(hit, cl, ray);
 	if (typecmp("pl", cl->closest_obj))
-		get_hit_tr(&hit, cl, ray);
+		get_hit_tr(hit, cl, ray);
+	if (typecmp("sq", cl->closest_obj))
+		get_hit_tr(hit, cl, ray);
 	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio); // ok
 	while (light)
 	{
-		if (in_shad(scene, light->content, &hit))
+		if (in_shad(scene, light->content, hit))
 		{
 			light = light->next;
 			continue;
 		}
-		coef = l_shading(&hit, light->content, cl);
+		coef = l_shading(hit, light->content);
 		if (typecmp("sp", cl->closest_obj))
-			coef += s_shading(&hit, light->content, ray, cl);
+			coef += s_shading(hit, light->content, ray);
 		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
 		rgb = rgb_add(rgb, temp);
 		light = light->next;
 	}
 	return (rgb);
 }
-
 int		ray_trace(t_ray *ray, t_scene *scene)
 {
 	t_vector rgb;
 	t_closest cl;
 	t_range range;
+	t_hit	*hit;
 
-	range.t_min = 1;
+	range.t_min = 0;
 	range.t_max = INFINITY;
-	cl_inter(&cl, ray, scene->object, 0);
-	if (cl.closest_obj == NULL)
-		return (BG_COLOUR);
-	else
-		rgb = calc_light(&cl, scene, ray);
+	hit = malloc(sizeof(t_hit));
+	rgb = set_vector(0 ,0 , 0);
+	if (hit)
+	{
+		cl_inter(&cl, ray, scene->object, &range);
+		if (cl.closest_obj == NULL)
+			return (BG_COLOUR);
+		else
+			rgb = calc_light(&cl, scene, ray, hit);
+	}
+	free(hit);
 	return (ctohex(rgb));
 }
 

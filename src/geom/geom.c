@@ -25,6 +25,15 @@ float vector_length(t_vector v)
 	return (length);
 }
 
+float vector_dist(t_vector v1, t_vector v2)
+{
+	float res;
+
+	res = powf(v1.x - v2.x, 2) + powf(v1.y - v2.y, 2) + powf(v1.z - v2.z, 2);
+	res = sqrtf(res);
+	return (res);
+}
+
 void normalize(t_vector *v)
 {
 	float length;

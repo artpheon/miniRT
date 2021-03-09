@@ -50,30 +50,33 @@ void print_scene(t_scene *conf)
 			printf("\n");
 	}
 	printf("LIGHTINGS:\n");
-	for (int i = 1;; i++)
+	if (conf->light)
 	{
-		printf("Original XYZ of the lighting #%d: %.2f, %.2f, %.2f\n",
-			   i,
-			   ((t_light *) (conf->light->content))->origin_coord.x,
-			   ((t_light *) (conf->light->content))->origin_coord.y,
-			   ((t_light *) (conf->light->content))->origin_coord.z);
-		printf("Ratio of the camera #%d: %f\n",
-			   i,
-			   ((t_light *) (conf->light->content))->ratio);
-		printf("RGB of the lighting #%d: %.0f, %.0f, %.0f\n\n",
-			   i,
-			   ((t_light *) (conf->light->content))->rgb.x,
-			   ((t_light *) (conf->light->content))->rgb.y,
-			   ((t_light *) (conf->light->content))->rgb.z);
-		if (conf->light->next == NULL)
-			break;
-		conf->light = conf->light->next;
-	}
-	for (int i = 0; i < 60; i++)
-	{
-		printf("_");
-		if (i == 59)
-			printf("\n");
+		for (int i = 1;; i++)
+		{
+			printf("Original XYZ of the lighting #%d: %.2f, %.2f, %.2f\n",
+				   i,
+				   ((t_light *) (conf->light->content))->origin_coord.x,
+				   ((t_light *) (conf->light->content))->origin_coord.y,
+				   ((t_light *) (conf->light->content))->origin_coord.z);
+			printf("Ratio of the camera #%d: %f\n",
+				   i,
+				   ((t_light *) (conf->light->content))->ratio);
+			printf("RGB of the lighting #%d: %.0f, %.0f, %.0f\n\n",
+				   i,
+				   ((t_light *) (conf->light->content))->rgb.x,
+				   ((t_light *) (conf->light->content))->rgb.y,
+				   ((t_light *) (conf->light->content))->rgb.z);
+			if (conf->light->next == NULL)
+				break;
+			conf->light = conf->light->next;
+		}
+		for (int i = 0; i < 60; i++)
+		{
+			printf("_");
+			if (i == 59)
+				printf("\n");
+		}
 	}
 
 	for (int i = 1;; i++)
@@ -82,7 +85,7 @@ void print_scene(t_scene *conf)
 							"sp", 2))
 		{
 			printf("SPHERE:\nOriginal XYZ coordinates: %.2f, %.2f, %.2f\n"
-				   "Sphere diameter: %.3f\n"
+				   "Sphere radius: %.3f\n"
 				   "Sphere RGB colour: %.0f, %.0f, %.0f\n\n",
 				   ((t_object *) (conf->object->content))->origin_coord.x,
 				   ((t_object *) (conf->object->content))->origin_coord.y,
