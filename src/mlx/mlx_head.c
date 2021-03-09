@@ -237,8 +237,8 @@ void intersect_cy(t_ray *ray, t_object *obj, float *res)
 		t = INFINITY;
 		if (p.t1 >= 0 && *res > p.t1)
 			t = p.t1;
-		if (p.t2 >= 0 && *res > p.t2)
-			t = p.t2;
+		if (p.t2 >= 0 && *res > p.t2) // fixme какое значение брать
+				t = p.t2;
 		if (t == INFINITY)
 			return ;
 		inter = vector_add(ray->orig, v_mult_scal(ray->dir, t));

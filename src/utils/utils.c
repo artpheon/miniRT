@@ -1,6 +1,6 @@
 #include "header.h"
 
-t_vector set_vector(float x, float y, float z)
+t_vector	set_vector(float x, float y, float z)
 {
     t_vector new;
 
@@ -10,18 +10,7 @@ t_vector set_vector(float x, float y, float z)
     return (new);
 }
 
-t_vector set_nvector(float x, float y, float z)
-{
-    t_vector new;
-
-    new.x = x;
-    new.y = y;
-    new.z = z;
-    normalize(&new);
-    return (new);
-}
-
-t_ray set_ray(t_vector origin, t_vector dir)
+t_ray		set_ray(t_vector origin, t_vector dir)
 {
     t_ray new;
 
@@ -31,7 +20,7 @@ t_ray set_ray(t_vector origin, t_vector dir)
     return (new);
 }
 
-void strrev(char *s)
+void		strrev(char *s)
 {
     char b;
     char e;
@@ -51,8 +40,7 @@ void strrev(char *s)
     }
 }
 
-
-float macheps(void)
+float		macheps(void)
 {
 	float e = 1.0f;
 
@@ -61,7 +49,7 @@ float macheps(void)
 	return (e);
 }
 
-int ctohex(t_vector rgb)
+int			ctohex(t_vector rgb)
 {
     int r;
     int g;
@@ -73,7 +61,7 @@ int ctohex(t_vector rgb)
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
-t_vector hextoc(int hex)
+t_vector	hextoc(int hex)
 {
 	t_vector new;
 
@@ -83,13 +71,13 @@ t_vector hextoc(int hex)
 	return(new);
 }
 
-void exit_error(char *message, int errn)
+void		exit_error(char *message, int errn)
 {
     perror(message);
     exit(errn);
 }
 
-int typecmp(char *t, t_object *o)
+int			typecmp(char *t, t_object *o)
 {
     if (ft_strncmp(o->type, t, 2) == 0)
         return (1);

@@ -1,10 +1,6 @@
-//
-// Created by Howe Robbin on 1/20/21.
-//
-
 #include "header.h"
 
-int get_next_line(char **line, int fd)
+int			get_next_line(char **line, int fd)
 {
 	char buff;
 	char buffer[1000];
@@ -36,12 +32,12 @@ int get_next_line(char **line, int fd)
 	return (1);
 }
 
-int ft_isspace(char c)
+int			ft_isspace(char c)
 {
 	return ((c >= 9 && c <= 13) || c == 32);
 }
 
-t_scene *alloc_scene()
+t_scene		*alloc_scene()
 {
 	t_scene *scene;
 
@@ -56,7 +52,7 @@ t_scene *alloc_scene()
 	return (scene);
 }
 
-void	p_check_n(t_vector *n)
+void		p_check_n(t_vector *n)
 {
 	print_vector(*n);
 	if (n->x > 1 || n->x < -1)
@@ -67,7 +63,7 @@ void	p_check_n(t_vector *n)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
 }
 
-void 	lr_check(float f)
+void		lr_check(float f)
 {
 	if (f < 0)
 		exit_error("ratio value is too low", -1);
@@ -75,7 +71,7 @@ void 	lr_check(float f)
 		exit_error("ratio value is too big", -1);
 }
 
-char *skip_1num(char *str)
+char		*skip_1num(char *str)
 {
 	while (ft_isspace(*str))
 		str++;
@@ -94,7 +90,7 @@ char *skip_1num(char *str)
 	return (str);
 }
 
-char *skip_3num(char *str)
+char		*skip_3num(char *str)
 {
 	str = skip_1num(str);
 	str++;
@@ -104,7 +100,7 @@ char *skip_3num(char *str)
 	return (str);
 }
 
-void get_resolution(t_scene *scene, char *line)
+void		get_resolution(t_scene *scene, char *line)
 {
 	if (*line == 'R')
 		line++;
@@ -113,7 +109,7 @@ void get_resolution(t_scene *scene, char *line)
 	scene->height = ft_atoi(line);
 }
 
-float ft_atof(char *st)
+float		ft_atof(char *st)
 {
 	float	res1;
 	float	res2;
@@ -155,7 +151,7 @@ float ft_atof(char *st)
 	return (res1 + res2);
 }
 
-void	str_to_three(char *str, t_vector *new)
+void		str_to_three(char *str, t_vector *new)
 {
 	new->x = ft_atof(str);
 	str = skip_1num(str);
@@ -172,7 +168,7 @@ void	str_to_three(char *str, t_vector *new)
 	new->z = ft_atof(str);
 }
 
-t_vector get_tr_normal(t_object *tr)
+t_vector	get_tr_normal(t_object *tr)
 {
 	t_vector u;
 	t_vector v;
@@ -188,7 +184,7 @@ t_vector get_tr_normal(t_object *tr)
 	return (norm);
 }
 
-t_ambient get_ambient(char *line)
+t_ambient	get_ambient(char *line)
 {
 	t_ambient new;
 
@@ -200,13 +196,12 @@ t_ambient get_ambient(char *line)
 	return (new);
 }
 
-t_list	*get_camera(char *line)
+t_list		*get_camera(char *line)
 {
 	t_list		*new;
 	t_camera	*new_cam;
 
 	line++;
-	
 	if (!(new_cam = (t_camera *)malloc(sizeof(t_camera))))
 		exit_error("Could not allocate memory for camera", 1);
 	str_to_three(line, &new_cam->origin_coord);
@@ -223,7 +218,7 @@ t_list	*get_camera(char *line)
 	return (new);
 }
 
-t_list *get_light(char *line)
+t_list		*get_light(char *line)
 {
 	t_list *new;
 	t_light *new_light;
@@ -241,7 +236,7 @@ t_list *get_light(char *line)
 	return (new);
 }
 
-t_list *get_sphere(char *line)
+t_list		*get_sphere(char *line)
 {
 	t_list *new;
 	t_object *new_obj;
@@ -261,7 +256,7 @@ t_list *get_sphere(char *line)
 	return (new);
 }
 
-t_list *get_plane(char *line)
+t_list		*get_plane(char *line)
 {
 	t_list *new;
 	t_object *new_obj;
@@ -281,7 +276,7 @@ t_list *get_plane(char *line)
 	return (new);
 }
 
-t_list *get_square(char *line)
+t_list		*get_square(char *line)
 {
 	t_list *new;
 	t_object *new_obj;
@@ -303,7 +298,7 @@ t_list *get_square(char *line)
 	return (new);
 }
 
-t_list *get_cylinder(char *line)
+t_list		*get_cylinder(char *line)
 {
 	t_list *new;
 	t_object *new_obj;
@@ -327,7 +322,7 @@ t_list *get_cylinder(char *line)
 	return (new);
 }
 
-int		v3cmp(t_vector v1, t_vector v2)
+int			v3cmp(t_vector v1, t_vector v2)
 {
 	if (v1.x == v2.x &&
 		v1.y == v2.y &&
@@ -337,12 +332,10 @@ int		v3cmp(t_vector v1, t_vector v2)
 		return (0);
 }
 
-//fixme
-
-t_list *get_triangle(char *line)
+t_list		*get_triangle(char *line)
 {
-	t_list *new;
-	t_object *new_obj;
+	t_list		*new;
+	t_object	*new_obj;
 
 	line += 2;
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
@@ -360,7 +353,7 @@ t_list *get_triangle(char *line)
 	return (new);
 }
 
-void fill_scene(t_scene *scene, char *line)
+void		fill_scene(t_scene *scene, char *line)
 {
 	while (ft_isspace(*line))
 		line++;
@@ -388,7 +381,7 @@ void fill_scene(t_scene *scene, char *line)
 		exit_error("Parser reading error. Undefined symbol in the line.", -1);
 }
 
-void 	p_first_check(int fd, char *name)
+void		p_first_check(int fd, char *name)
 {
 	if (fd < 0)
 		exit_error("Cannot open file passed as argument.", -1);
@@ -401,7 +394,7 @@ void 	p_first_check(int fd, char *name)
 		exit_error("Wrong file extension.", -1);
 }
 
-void 	p_second_check(int ret, t_scene *scene)
+void		p_second_check(int ret, t_scene *scene)
 {
 	if (ret == -1)
 		exit_error("Cannot read file", -1);
@@ -413,7 +406,7 @@ void 	p_second_check(int ret, t_scene *scene)
 		exit_error("Wrong ambient(ratio below zero).", -1);
 }
 
-t_scene *parser(char *file)
+t_scene		*parser(char *file)
 {
 	int			fd;
 	int			read_return;
