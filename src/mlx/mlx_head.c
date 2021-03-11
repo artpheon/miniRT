@@ -27,12 +27,12 @@ void start_show(t_info *info)
 	mlx_loop(info->mlx);
 }
 
-t_vector get_sp_plane(float width, float height, t_camera *cam)
+t_vector calc_vplane(float width, float height, t_camera *cam)
 {
-	t_vector new;
-	float vp_width;
-	float vp_height;
-	float aspect_ratio;
+	t_vector	new;
+	float		vp_width;
+	float		vp_height;
+	float		aspect_ratio;
 
 	aspect_ratio = width / height;
 	vp_width = tanf(M_PI * 0.5 * cam->fov / 180.) * 2;
@@ -206,107 +206,141 @@ void cy_as_pl(t_object *o, t_vector inter, t_vector dir, float *ttemp)
 	*ttemp = troot;
 }
 
-int cy_solve(t_ray *r, t_object *o, t_cy_vars *p)
+int		solve_quad(float a, float b, float c, float *t)
 {
-	t_vector tmp;
+	float discrim;
 
-	p->cross = vector_prod(r->dir, o->vector_norm);
-	p->sub = vector_sub(r->orig, o->origin_coord);
-	tmp = vector_prod(p->sub, o->vector_norm);
-	p->a = dot_prod(p->cross, p->cross);
-	p->b = 2 * dot_prod(p->cross, tmp);
-	p->c = dot_prod(tmp, tmp) - powf(o->cyl_d / 2, 2) * dot_prod(o->vector_norm, o->vector_norm);
-	p->det = powf(p->b, 2) - (4 * p->a * p->c);
-	if (p->det < 0)
+	discrim = (b * b) - (4 * a * c);
+	if (discrim < 0)
+	{
+		t[0] = INFINITY;
+		t[1] = INFINITY;
 		return (0);
-	p->a = 2 * p->a;
-	p->det = sqrtf(p->det);
-	p->t1 = (-p->b - p->det) / p->a;
-	p->t2 = (-p->b + p->det) / p->a;
+	}
+	else
+	{
+		t[0] = (-b - sqrtf(discrim)) / (2 * a);
+		t[1] = (-b + sqrtf(discrim)) / (2 * a);
+	}
 	return (1);
 }
-void intersect_cy(t_ray *ray, t_object *obj, float *res)
-{
-	t_cy_vars	p;
-	t_vector	inter;
-	float 		t;
-	float 		ttmp;
 
-	if (cy_solve(ray, obj, &p))
-	{
-		t = INFINITY;
-		if (p.t1 >= 0 && *res > p.t1)
-			t = p.t1;
-		if (p.t2 >= 0 && *res > p.t2) // fixme какое значение брать
-				t = p.t2;
-		if (t == INFINITY)
-			return ;
-		inter = vector_add(ray->orig, v_mult_scal(ray->dir, t));
-		ttmp = INFINITY;
-		cy_as_pl(obj, inter, obj->vector_norm, &ttmp);
-		ttmp <= obj->cyl_h / 2 ? *res = t : INFINITY; //infinity?
-		cy_as_pl(obj, inter, v_mult_scal(obj->vector_norm, -1), &ttmp);
-		ttmp <= obj->cyl_h / 2 ? *res = t : INFINITY; //infinity?
-	}
+void cy_check_t(float *t, t_object *o, t_ray *r)
+{
+	t_vector q;
+	t_vector point2;
+
+	point2 = vector_add(o->origin_coord, v_mult_scal(o->vector_norm, o->cyl_h));
+	q = vector_add(r->orig, v_mult_scal(r->dir, *t));
+	if (dot_prod(o->vector_norm, vector_sub(q, o->origin_coord)) <= 0)
+		*t = -1;
+	if (dot_prod(o->vector_norm, vector_sub(q, point2)) >= 0)
+		*t = -1;
 }
 
+int		cy_solvable(t_ray *r, t_object *o, float *t)
+{
+	t_vector a_sqrt;
+	t_vector right;
+	t_vector sub_o;
+	float a;
+	float b;
+	float c;
+
+	sub_o = vector_sub(r->orig, o->origin_coord);
+	a_sqrt = vector_sub(r->dir, v_mult_scal(o->vector_norm, dot_prod(r->dir, o->vector_norm)));
+	a = dot_prod(a_sqrt, a_sqrt);
+	right = vector_sub(sub_o, v_mult_scal(o->vector_norm, dot_prod(sub_o, o->vector_norm)));
+	b = 2 * dot_prod(a_sqrt, right);
+	c = dot_prod(right, right) - ((o->cyl_d / 2) * (o->cyl_d / 2));
+	if (solve_quad(a, b, c, t))
+		return (1);
+	else
+		return (0);
+}
+
+void	intersect_cy(t_ray *ray, t_object *obj, float *res)
+{
+	float t[2];
+	if (cy_solvable(ray, obj, t))
+	{
+		if (t[0] > 0)
+			cy_check_t(&t[0], obj, ray);
+		if (t[1] > 0)
+			cy_check_t(&t[1], obj, ray);
+		if (t[0] < 0 && t[1] < 0)
+			*res = -1;
+		if (t[1] < t[0])
+		{
+			if (t[1] > 0)
+				*res = t[1];
+			else
+				*res = t[0];
+		}
+		else
+		{
+			if (t[0] > 0)
+				*res = t[0];
+			else
+				*res = t[1];
+		}
+	}
+}
 void cl_inter(t_closest *cl, t_ray *ray, t_list *start, t_range *range)
 {
 	float	resol;
-	t_list	*temp;
 
 	cl->closest_t = INFINITY;
 	resol = INFINITY;
 	cl->closest_obj = NULL;
-	temp = start;
-	while (temp)
+	while (start)
 	{
-		if (typecmp("sp", temp->content))
+		if (typecmp("sp", start->content))
 		{
-			intersect_sp(ray, temp->content, &resol, cl->closest_t);
+			intersect_sp(ray, start->content, &resol, cl->closest_t);
 			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
-				cl->closest_obj = temp->content;
+				cl->closest_obj = start->content;
 			}
 		}
-		if (typecmp("tr", temp->content))
+		if (typecmp("tr", start->content))
 		{
-			intersect_tr(ray, temp->content, &resol);
+			intersect_tr(ray, start->content, &resol);
 			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
-				cl->closest_obj = temp->content;
+				cl->closest_obj = start->content;
 			}
 		}
-		if (typecmp("pl", temp->content))
+		if (typecmp("pl", start->content))
 		{
-			intersect_pl(ray, temp->content, &resol);
+			intersect_pl(ray, start->content, &resol);
 			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
-				cl->closest_obj = temp->content;
+				cl->closest_obj = start->content;
 			}
 		}
-		if (typecmp("sq", temp->content))
+		if (typecmp("sq", start->content))
 		{
-			intersect_sq(ray, temp->content, &resol);
+			intersect_sq(ray, start->content, &resol);
 			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
-				cl->closest_obj = temp->content;
+				cl->closest_obj = start->content;
 			}
 		}
-		if (typecmp("cy", temp->content))
+		if (typecmp("cy", start->content))
 		{
-			intersect_cy(ray, temp->content, &resol);
+			intersect_cy(ray, start->content, &resol);
 			if (resol >= range->t_min && resol < cl->closest_t && resol < range->t_max)
 			{
 				cl->closest_t = resol;
-				cl->closest_obj = temp->content;
+				cl->closest_obj = start->content;
 			}
 		}
-		temp = temp->next;
+		start = start->next;
 	}
 }
 
@@ -320,7 +354,7 @@ void get_hit_sp(t_hit *hit, t_closest *cl, t_ray *ray)
 
 void get_hit_tr(t_hit *hit, t_closest *cl, t_ray *ray)
 {
-	hit->hit_dist = cl->closest_t;
+	hit->hit_dist = cl->closest_t * 0.99;
 	hit->hit_pos = vector_add(ray->orig, v_mult_scal(ray->dir, hit->hit_dist));
 	if (dot_prod(ray->dir, cl->closest_obj->vector_norm) > 0)
 		hit->hit_normal = v_mult_scal(cl->closest_obj->vector_norm, -1);
@@ -401,7 +435,9 @@ t_vector calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit)
 		get_hit_tr(hit, cl, ray);
 	if (typecmp("sq", cl->closest_obj))
 		get_hit_tr(hit, cl, ray);
-	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio); // ok
+	if (typecmp("cy", cl->closest_obj))
+		get_hit_tr(hit, cl, ray);
+	rgb = rgb_mult_n(cl->closest_obj->rgb, scene->ambl.ratio); // fixme нельзя смешивать ргб
 	while (light)
 	{
 		if (in_shad(scene, light->content, hit))
@@ -451,7 +487,7 @@ void put_rays(t_scene *scene, void *mlx, void *win)
 	t_vector plane;
 	t_ray ray;
 
-	plane = get_sp_plane(scene->width, scene->height, scene->camera->content);
+	plane = calc_vplane(scene->width, scene->height, scene->camera->content);
 	canvas_y = 0;
 	vp_y = scene->height / 2;
 	while (vp_y >= scene->height / 2 * (-1))

@@ -44,7 +44,7 @@ apple: ${OBS}
 	@make -C ./libs/libft/
 	@make -C ./libs/mms/
 	@cp ./libs/mms/libmlx.dylib .
-	gcc ${OBS} -Wall -Wextra -g -fsanitize=address ${APP_INC} ${APP_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra -g ${APP_INC} ${APP_LIBS} -o ${NAME}
 
 clean:
 	${RM} ${OBS}
