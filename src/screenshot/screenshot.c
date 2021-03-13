@@ -86,7 +86,7 @@ void	shoot_screen(t_info *info)
 									  &info->img->bits_per_pixel,
 									  &info->img->line_length,
 									  &info->img->endian);
-	put_rays(info->scene, info->img, 0);
+	put_rays(info->scene, info->img);
 	writebmp(scene->width, scene->height, info->img);
 	exit_free(info);
 }

@@ -36,6 +36,11 @@ typedef struct s_closest
 	t_object	*cl_obj;
 }				t_closest;
 
+typedef struct s_matrix
+{
+	double d[4][4];
+}				t_matrix;
+
 typedef struct s_range
 {
 	float		t_min;

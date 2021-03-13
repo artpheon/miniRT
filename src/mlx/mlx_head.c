@@ -24,6 +24,7 @@ int key_hook(int keycode, t_info *info)
 int             w_close(t_info *info)
 {
 	exit_free(info);
+	return (0);
 }
 
 void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
@@ -357,14 +358,53 @@ void v3_mat_x(t_vector *v1, float x, float y, float z)
 	v1->y = v1->x * 0 + v1->y * cosf(x) + v1->z * -sinf(x);
 	v1->z = v1->x * 0 + v1->y * sinf(x) + v1->z * cosf(x);
 
-	v1->x = v1->x * cos(y) + v1->y * 0 + v1->z * sin(y);
+	v1->x = v1->x * cosf(y) + v1->y * 0 + v1->z * sinf(y);
 	v1->y = v1->x * 0 + v1->y * 1 + v1->z * 0;
-	v1->z = v1->x * -sin(y) + v1->y * 0 + v1->z * cosf(y);
+	v1->z = v1->x * -sinf(y) + v1->y * 0 + v1->z * cosf(y);
 
-	v1->x = v1->x * cos(z) + v1->y * -sin(z) + v1->z * 0;
-	v1->y = v1->x * sin(z) + v1->y * cosf(z) + v1->z * 0;
+	v1->x = v1->x * cosf(z) + v1->y * -sinf(z) + v1->z * 0;
+	v1->y = v1->x * sinf(z) + v1->y * cosf(z) + v1->z * 0;
 	v1->z = v1->x * 0 + v1->y * 0 + v1->z * 1;
 }
+
+t_vector		multiply_by_matrix(t_vector p, t_matrix m)
+{
+	t_vector res;
+
+	res.x = p.x * m.d[0][0] + p.y * m.d[1][0] + p.z * m.d[2][0] + m.d[3][0];
+	res.y = p.x * m.d[0][1] + p.y * m.d[1][1] + p.z * m.d[2][1] + m.d[3][1];
+	res.z = p.x * m.d[0][2] + p.y * m.d[1][2] + p.z * m.d[2][2] + m.d[3][2];
+	return (res);
+}
+
+t_matrix	look_at(t_vector origin, t_vector cam_vector)
+{
+	t_matrix	m;
+	t_vector		random;
+	t_vector		right;
+	t_vector		up;
+
+	random = set_vector(0, 1, 0);
+	normalize(&random);
+	right = v3_cross(random, cam_vector);
+	normalize(&right);
+	up = v3_cross(cam_vector, right);
+	normalize(&up);
+	m.d[0][0] = right.x;
+	m.d[0][1] = right.y;
+	m.d[0][2] = right.z;
+	m.d[1][0] = up.x;
+	m.d[1][1] = up.y;
+	m.d[1][2] = up.z;
+	m.d[2][0] = cam_vector.x;
+	m.d[2][1] = cam_vector.y;
+	m.d[2][2] = cam_vector.z;
+	m.d[3][0] = origin.x;
+	m.d[3][1] = origin.y;
+	m.d[3][2] = origin.z;
+	return (m);
+}
+
 t_vector calc_vplane(float width, float height, t_camera *cam)
 {
 	t_vector	new;
@@ -378,30 +418,92 @@ t_vector calc_vplane(float width, float height, t_camera *cam)
 	new.x = vp_width / width;
 	new.y = vp_height / height;
 	new.z = cam->normal.z;
-	//print_vector(new);
-	return (new);
+	return(new);
+	/*t_vector	new;
+	float		vp_x;
+	float		vp_y;
+	double		aspect_ratio;
+	double		fov_coef;
+
+	aspect_ratio = (double)width / (double)height;
+	fov_coef = tan((double)cam->fov / 2 * M_PI / 180.);
+	vp_x = (2 * (width + 0.5)) / (double)scene->width - 1) * aspect_ratio * fov_coeff;
+
+	p_x = (2 * (x + 0.5) / (double)scene->width - 1) * aspect_ratio * fov_coeff;
+	p_y = (1 - 2 * (y + 0.5) / (double)scene->height) * fov_coeff;
+	return (create_v3(p_x, p_y, 1));
+	vp_height = vp_width / aspect_ratio;
+	new.x = vp_width / width;
+	new.y = vp_height / height;
+	new.z = cam->normal.z;
+
+	t_vector origin;
+	t_vector direction;
+	t_matrix c2w;
+	c2w = look_at(cam->orig, cam->normal);
+	origin = multiply_by_matrix(set_vector(0, 0, 0), c2w);
+	direction = get_width
+	return (new);*/
 }
 
 
 
-t_ray	gen_ray(t_camera *cam, t_vector plane, float x, float y)
+t_vector	get_dir(t_camera *cam, t_scene *scene, int x, int y)
 {
-	t_vector dir;
+	double fov_coeff;
+	double aspect_ratio;
+	double p_x;
+	double p_y;
+
+	fov_coeff = tan((double)cam->fov / 2 * M_PI / 180);
+	aspect_ratio = (double)scene->width / (double)scene->height;
+	p_x = (2 * (x + 0.5) / (double)scene->width) * aspect_ratio * fov_coeff;
+	p_y = (2 * (y + 0.5) / (double)scene->height) * fov_coeff;
+	return (set_vector(p_x, p_y, 1));
+
+
+	/*t_vector dir;
 	t_ray ray;
 
 	dir.x = x * plane.x;
 	dir.y = y * plane.y;
 	dir.z = plane.z;
 
-	v3_mat_x(&dir, 0, 0.4, 0);
+	v3_mat_x(&dir, 0.1f, 0.1f, 0.0f);
 	ray = set_ray(cam->orig, dir);
-	return (ray);
+	return (ray);*/
+}
+
+t_ray	gen_ray(int x, int y, t_scene *scene, t_vector plane)
+{
+	t_vector		origin;
+	t_vector		direction;
+	t_matrix	c2w;
+	t_camera	*cam;
+
+	cam = scene->camera->content;
+	c2w = look_at(cam->orig, cam->normal);
+	origin = multiply_by_matrix(set_vector(0, 0, 0), c2w);
+	direction = get_dir(cam, scene, x, y);
+	direction = multiply_by_matrix(direction, c2w);
+	direction = v3_sub(direction, origin);
+	return (set_ray(origin, direction));
+}
+
+void 	counter_on(t_scene *scene, const int *canvas)
+{
+	int rez;
+	int tmp;
+
+	rez = scene->height / 100; // 5,5
+	printf("\r");
+	printf("Loading camera: %d", (canvas[1] / rez));
 }
 
 void put_rays(t_scene *scene, t_data *img, int i)
 {
 	int			canvas[2];
-	float		vp[2];
+	int			vp[2];
 	int			colour;
 	t_vector	plane;
 	t_ray		ray;
@@ -415,13 +517,15 @@ void put_rays(t_scene *scene, t_data *img, int i)
 		canvas[0] = 0;
 		while (vp[0] < scene->width / 2)
 		{
-			ray = gen_ray(scene->camera->content, plane, vp[0], vp[1]);
+			ray = gen_ray(vp[0], vp[1], scene, plane);
 			colour = ray_trace(&ray, scene);
 			my_mlx_pixel_put(img, canvas[0], canvas[1], colour);
 			vp[0]++;
 			canvas[0]++;
 		}
+		printf("Camera: %d, %d\r", i + 1, (100 * canvas[1]) / scene->height);
 		vp[1]--;
+		//counter_on(scene, canvas);
 		canvas[1]++;
 	}
 }
