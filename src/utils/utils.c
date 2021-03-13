@@ -73,7 +73,8 @@ t_vector	hextoc(int hex)
 
 void		exit_error(char *message, int errn)
 {
-    perror(message);
+    write(2, "Error\n", 6);
+    write(2, message, ft_strlen(message));
     exit(errn);
 }
 

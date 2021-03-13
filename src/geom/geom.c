@@ -135,3 +135,12 @@ t_vector rgb_add(t_vector rgb, t_vector add)
 		rgb.z = 255;
 	return (rgb);
 }
+
+int		vec_cmp(t_vector v1, t_vector v2)
+{
+	if (v1.x == v2.x &&
+		v1.y == v2.y &&
+		v1.z == v2.z)
+		return (1);
+	return (0);
+}

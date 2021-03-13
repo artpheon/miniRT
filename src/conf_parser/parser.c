@@ -54,7 +54,6 @@ t_scene		*alloc_scene()
 
 void		p_check_n(t_vector *n)
 {
-	print_vector(*n);
 	if (n->x > 1 || n->x < -1)
 		exit_error("Scene has wrong normalized orientation v3.", -1);
 	if (n->y > 1 || n->y < -1)
@@ -109,46 +108,50 @@ void		get_resolution(t_scene *scene, char *line)
 	scene->height = ft_atoi(line);
 }
 
-float		ft_atof(char *st)
+int      ft_intlen(int i)
 {
-	float	res1;
-	float	res2;
-	int 	sign;
-	int		zer;
-	char	*tmp;
+	int count;
 
-	sign = 1;
-	res1 = (float)ft_atoi(st);
-	res2 = 0;
-	zer = 0;
-	tmp = (char *)st;
-	while (ft_isspace(*tmp))
-		tmp++;
-	if (*tmp == '-' || *tmp == '+')
+	count = 1;
+	while (i)
 	{
-		if (*tmp == '-')
-			sign = -1;
-		tmp++;
+		i /= 10;
+		if (i != 0)
+			count++;
 	}
-	while (ft_isdigit(*tmp))
-		tmp++;
-	if (*tmp == '.')
+	return (count);
+}
+
+float    ft_atof(char *str)
+{
+	float  atof;
+	int    atoi;
+	int    i;
+	int    fac;
+
+	fac = 1;
+	atof = 0;
+	i = 0;
+	while (ft_isspace(str[i]))
+		i++;
+	str[i] == '-' ? fac = -1 : 0;
+	atoi = ft_atoi(str);
+
+	i += ft_intlen(atoi);
+
+	fac == -1 ? i++ : 0;
+	if (str[i] != '.')
+		return (atoi);
+	i++;
+	while (ft_isdigit(str[i]))
 	{
-		tmp++;
-		while (*tmp == '0')
-		{
-			zer++;
-			tmp++;
-		}
-		if (ft_isdigit(*tmp))
-			res2 += (float)ft_atoi(tmp);
-		while ((int)res2 != 0)
-			res2 /= 10;
-		while (zer-- > 0)
-			res2 /= 10;
+		fac *= 10;
+		atof = atof * 10 + str[i] - 48;
+		i++;
 	}
-	res2 = sign < 0 ? -res2 : res2;
-	return (res1 + res2);
+
+	atof = atof / fac;
+	return (atoi + atof);
 }
 
 void		str_to_three(char *str, t_vector *new)
@@ -180,7 +183,6 @@ t_vector	get_tr_normal(t_object *tr)
 	normalize(&norm);
 	if (norm.z < 0)
 		norm = v_mult_scal(norm, -1); // fixme if camera is behind
-	print_vector(norm);
 	return (norm);
 }
 
@@ -384,12 +386,13 @@ void		fill_scene(t_scene *scene, char *line)
 void		p_first_check(int fd, char *name)
 {
 	if (fd < 0)
-		exit_error("Cannot open file passed as argument.", -1);
+		exit_error("No such file, or cannot open it", -1);
 	if (ft_strlen(name) < 4)
 		exit_error("Filename too short.", -1);
 	while (*name)
 		name++;
-	name -= 3;
+	while (*name != '.')
+		name--;
 	if (ft_strncmp(name, ".rt", 3))
 		exit_error("Wrong file extension.", -1);
 }
@@ -413,7 +416,9 @@ t_scene		*parser(char *file)
 	char		*line;
 	t_scene		*new;
 
-	printf("___file: \"%s\"___\n", file);
+	write(1, "file: ", 6);
+	write(1, file, ft_strlen(file));
+	write(1, "\n", 1);
 	line = NULL;
 	fd = open(file, O_RDONLY);
 	p_first_check(fd, file);

@@ -6,24 +6,67 @@
 
 int key_hook(int keycode, t_info *info)
 {
+	static int i;
+
 	if (keycode == ESC)
 	{
 		mlx_destroy_window(info->mlx, info->win);
 		exit(0);
 	}
+	if (keycode == TAB)
+	{
+		i++;
+		if (i >= info->cams)
+			i = 0;
+		mlx_put_image_to_window(info->mlx, info->win, info->img[i].img, 0, 0);
+	}
 	printf("key: %d\n", keycode);
 	return (0);
+}
+
+void            my_mlx_pixel_put(t_data *data, int x, int y, int color)
+{
+	char    *dst;
+
+	dst = data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8));
+	*(unsigned int*)dst = color;
+}
+
+void 	xy_size_check(t_scene *scene, void *mlx)
+{
+	int w;
+	int h;
+	mlx_get_screen_size(mlx, &w, &h);
+	if (scene->width > w)
+		scene->width = w;
+	if (scene->height > h)
+		scene->height = h;
 }
 
 void start_show(t_info *info)
 {
 	t_scene *scene;
+	t_list	*cam_start;
+	int		i;
 
 	scene = info->scene;
+	cam_start = info->scene->camera;
 	info->mlx = mlx_init();
-	info->win = mlx_new_window(info->mlx, scene->width, scene->height, "miniRT");
-	mlx_key_hook(info->win, key_hook, info);
-	put_rays(info->scene, info->mlx, info->win);
+	xy_size_check(scene, info->mlx);
+	info->cams = ft_lstsize(scene->camera);
+	i = 0;
+	info->img = malloc(sizeof(t_data) * info->cams); //i.e. 5
+	info->win = mlx_new_window(info->mlx, scene->width, scene->height, "miniRT"); // создаем окно
+
+	while (i < info->cams)
+	{
+		info->img[i].img = mlx_new_image(info->mlx, scene->width, scene->height); // создаем имидж
+		info->img[i].addr = mlx_get_data_addr(info->img[i].img, &info->img[i].bits_per_pixel, &info->img[i].line_length, &info->img[i].endian); // достаем имиджа адрес
+		put_rays(info->scene, &info->img[i], i); //рисуем имидж
+		i++;
+	}
+	mlx_put_image_to_window(info->mlx, info->win, info->img[0].img, 0, 0); //кидаем имидж в окно
+	mlx_hook(info->win, 2, 0, key_hook, info);
 	mlx_loop(info->mlx);
 }
 
@@ -86,8 +129,6 @@ int inter_as_pl(t_ray *ray, t_object *o, float *res)
 
 	w = vector_sub(ray->orig, o->origin_coord); // t = dot(w,N)/dot(v,N)
 	a = -dot_prod(w, o->vector_norm);
-	//if (dot_prod(ray->dir, o->vector_norm) >= 0)
-	//	o->vector_norm = v_mult_scal(o->vector_norm, -1);
 	det = dot_prod(ray->dir, o->vector_norm);
 	if (fabsf(det) < macheps())
 	{
@@ -151,8 +192,133 @@ void intersect_pl(t_ray *ray, t_object *obj, float *res)
 	*res = r;
 }
 
+
+float		sq_as_pl(t_ray *r, t_object *sq)
+{
+	float		a;
+	float		b;
+	float		t;
+	t_vector	tmp;
+
+	tmp = vector_sub(r->orig, sq->origin_coord);
+	a = dot_prod(tmp, sq->vector_norm);
+	b = dot_prod(r->dir, sq->vector_norm);
+	if (b == 0 || (a < 0 && b < 0) || (a > 0 && b > 0))
+		return (0);
+	t = -a / b;
+	if (t < 0)
+		return (0);
+	return (t);
+}
+
+float	magnitude(t_vector a)
+{
+	return (sqrtf(powf(a.x, 2) + powf(a.y, 2) + powf(a.z, 2)));
+}
+
+t_vector	calculate_rot(t_vector *c2, t_vector *c3, t_vector rot, t_vector to)
+{
+	t_vector	c1;
+	t_vector	v;
+	float	c;
+	float	s;
+	float	r;
+
+	v = vector_prod(to, rot);
+	c = dot_prod(rot, to);
+	s = pow(magnitude(v), 2);
+	r = ((1 - c) / s);
+	c1 = set_vector(-r * (pow(v.y, 2) + pow(v.z, 2)) + 1, r * v.x * \
+				v.y - v.z, r * v.x * v.z + v.y);
+	(*c2) = set_vector(r * v.x * v.y + v.z, -r * (pow(v.x, 2) + \
+					pow(v.z, 2)) + 1, r * v.y * v.x - v.x);
+	(*c3) = set_vector(r * v.x * v.z - v.y, r * v.y * v.z - v.x, -r * \
+					(pow(v.x, 2) + pow(v.y, 2)) + 1);
+	return (c1);
+}
+
+t_vector	apply_rot(t_vector pos, t_vector dir, t_vector rot)
+{
+	t_vector	c1;
+	t_vector	c2;
+	t_vector	c3;
+	t_vector	prev;
+
+	if (dir.x == 0 && dir.y < 0 && dir.z == 0)
+		pos = set_vector(pos.x, pos.y, -pos.z);
+	else if (!(dir.x == 0 && dir.y != 0 && dir.z == 0))
+	{
+		prev = pos;
+		c1 = calculate_rot(&c2, &c3, rot, dir);
+		pos = set_vector(dot_prod(c1, prev), dot_prod(c2, prev), dot_prod(c3, prev));
+	}
+	return (pos);
+}
+
 void intersect_sq(t_ray *ray, t_object *obj, float *res)
 {
+	float		t;
+	float		a;
+	t_vector	p;
+	t_vector	data;
+
+	if (!(t = sq_as_pl(ray, obj)))
+		return ;
+	data = v_mult_scal(ray->dir, t);
+	p = vector_add(ray->orig, data);
+	if (obj->vector_norm.x != 0 || obj->vector_norm.y == 0 || obj->vector_norm.z != 0)
+		apply_rot(p, obj->vector_norm, set_vector(0, 1, 0));
+	a = obj->origin_coord.x - (obj->side_size / 2);
+	data.x = obj->origin_coord.x + (obj->side_size / 2);
+	data.y = obj->origin_coord.z - (obj->side_size / 2);
+	data.z = obj->origin_coord.z + (obj->side_size / 2); //fixme check at qfeuilla
+	if (!((p.x >= a && p.x <= data.x) && (p.z <= data.z && p.z >= data.y)))
+		return ;
+	*res = t;
+	/*
+	t_vector	side_dir;
+	t_vector	up_dir;
+	t_vector	side;
+	t_vector	u_l;
+	t_vector	u_r;
+	t_vector	b_r;
+	t_vector	b_l;
+	float 		p0z;
+
+	if (obj->vector_norm.z == 0)
+		return ;
+	p0z = ((obj->vector_norm.z * obj->origin_coord.z) +
+			obj->vector_norm.x * (obj->origin_coord.x + 1)) / obj->vector_norm.z;
+	side_dir = set_vector(-1, obj->origin_coord.y, p0z);
+	if (!vec_cmp(side_dir, obj->origin_coord))
+		side_dir = vector_sub(side_dir, obj->origin_coord);
+	normalize(&side_dir);
+	side = vector_add(obj->origin_coord, v_mult_scal(side_dir, (obj->side_size / 2)));
+	p0z = obj->vector_norm.y * ((obj->origin_coord.y - 1) + (obj->vector_norm.z * obj->origin_coord.z)) / obj->vector_norm.z;
+	up_dir = set_vector(obj->origin_coord.x, 1, p0z);
+	if (!vec_cmp(up_dir, obj->origin_coord))
+		up_dir = vector_sub(up_dir, obj->origin_coord);
+	normalize(&up_dir);
+	u_l = vector_add(side, v_mult_scal(up_dir, (obj->side_size / 2)));
+	print_vector(u_l);
+
+	side_dir = v_mult_scal(side_dir, -1);
+	side = vector_add(obj->origin_coord, v_mult_scal(side_dir, (obj->side_size / 2)));
+	u_r = vector_add(side, v_mult_scal(up_dir, (obj->side_size / 2)));
+	print_vector(u_r);
+
+	up_dir = v_mult_scal(up_dir, -1);
+	b_r = vector_add(side, v_mult_scal(up_dir, (obj->side_size / 2)));
+	print_vector(b_r);
+
+	side_dir = v_mult_scal(side_dir, -1);
+	side = vector_add(obj->origin_coord, v_mult_scal(side_dir, (obj->side_size / 2)));
+	b_l = vector_add(side, v_mult_scal(up_dir, (obj->side_size / 2)));
+	print_vector(b_l);
+	getchar();*/
+
+
+	/*
 	float	t;
 	float denom, hht;
 	t_vector p0, hpos;
@@ -171,7 +337,7 @@ void intersect_sq(t_ray *ray, t_object *obj, float *res)
 			return ;
 		if (t1 > 0)
 			*res = t1;*/
-
+/*
 		denom = dot_prod(obj->vector_norm, ray->dir);
 		p0 = vector_sub(obj->origin_coord, ray->orig);
 		t = dot_prod(p0, obj->vector_norm) / denom;
@@ -187,23 +353,7 @@ void intersect_sq(t_ray *ray, t_object *obj, float *res)
 				t = INFINITY;
 		}
 	} //fixme wrong formula
-	*res = t;
-}
-
-void cy_as_pl(t_object *o, t_vector inter, t_vector dir, float *ttemp)
-{
-	float a;
-	float b;
-	float troot;
-
-	a = dot_prod(vector_sub(inter, o->origin_coord), o->vector_norm);
-	b = dot_prod(dir, o->vector_norm);
-	if (b == 0 || (a < 0 && b < 0) || (a > 0 && b > 0))
-		return ;
-	troot = -a / b;
-	if (troot < 0 || *ttemp < troot)
-		return ;
-	*ttemp = troot;
+	*res = t; */
 }
 
 int		solve_quad(float a, float b, float c, float *t)
@@ -477,30 +627,33 @@ int		ray_trace(t_ray *ray, t_scene *scene)
 	return (ctohex(rgb));
 }
 
-void put_rays(t_scene *scene, void *mlx, void *win)
+void put_rays(t_scene *scene, t_data *img, int i)
 {
-	int canvas_x;
-	int canvas_y;
-	float vp_x;
-	float vp_y;
-	int colour;
-	t_vector plane;
-	t_ray ray;
+	int			canvas_x;
+	int			canvas_y;
+	float		vp_x;
+	float		vp_y;
+	int			colour;
+	t_vector	plane;
+	t_ray		ray;
 
+	if (i)
+		scene->camera = scene->camera->next;
 	plane = calc_vplane(scene->width, scene->height, scene->camera->content);
 	canvas_y = 0;
 	vp_y = scene->height / 2;
-	while (vp_y >= scene->height / 2 * (-1))
+	while (vp_y > scene->height / 2 * (-1))
 	{
 		vp_x = scene->width / 2 * (-1);
 		canvas_x = 0;
-		while (vp_x <= scene->width / 2)
+		while (vp_x < scene->width / 2)
 		{
 			ray = set_ray(((t_camera *)(scene->camera->content))->origin_coord,
 						  set_vector(plane.x * vp_x, plane.y * vp_y, plane.z));
-			//colour = calc_colour(scene, &plane, vp_x, vp_y); //fixme
+			//colour = calc_colour(scene, &plane, vp_x, vp_y);
 			colour = ray_trace(&ray, scene);
-			mlx_pixel_put(mlx, win, canvas_x, canvas_y, colour);
+			my_mlx_pixel_put(img, canvas_x, canvas_y, colour);
+			//mlx_pixel_put(mlx, win, canvas_x, canvas_y, colour);
 			vp_x++;
 			canvas_x++;
 		}

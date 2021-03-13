@@ -17,4 +17,5 @@ t_vector v_div_scal(t_vector v1, float num);
 t_vector rgb_add(t_vector rgb, t_vector add);
 t_vector rgb_add_n(t_vector rgb, float num);
 t_vector rgb_mult_n(t_vector rgb, float num);
+int		vec_cmp(t_vector v1, t_vector v2);
 #endif //MINIRT_MATH_H

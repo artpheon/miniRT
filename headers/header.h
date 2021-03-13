@@ -13,6 +13,7 @@
 # elif __APPLE__
 	#  define OS "Mac"
 	#  define ESC 53
+	#  define TAB 48
 # endif
 # define K_D 35
 # define K_S 30
