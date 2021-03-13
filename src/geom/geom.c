@@ -25,7 +25,7 @@ float vector_length(t_vector v)
 	return (length);
 }
 
-float vector_dist(t_vector v1, t_vector v2)
+float v3_dist(t_vector v1, t_vector v2)
 {
 	float res;
 
@@ -44,7 +44,7 @@ void normalize(t_vector *v)
 	v->z /= length;
 }
 
-t_vector vector_add(t_vector v1, t_vector v2)
+t_vector v3_add(t_vector v1, t_vector v2)
 {
 	t_vector sum;
 
@@ -54,7 +54,7 @@ t_vector vector_add(t_vector v1, t_vector v2)
 	return (sum);
 }
 
-t_vector vector_sub(t_vector v1, t_vector v2)
+t_vector v3_sub(t_vector v1, t_vector v2)
 {
 	t_vector diff;
 
@@ -64,7 +64,7 @@ t_vector vector_sub(t_vector v1, t_vector v2)
 	return (diff);
 }
 
-t_vector vector_prod(t_vector v1, t_vector v2)
+t_vector v3_cross(t_vector v1, t_vector v2)
 {
 	t_vector prod;
 
@@ -74,7 +74,7 @@ t_vector vector_prod(t_vector v1, t_vector v2)
 	return (prod);
 }
 
-t_vector v_mult_scal(t_vector v1, float num)
+t_vector v3_mult(t_vector v1, float num)
 {
 	t_vector new;
 
@@ -84,7 +84,7 @@ t_vector v_mult_scal(t_vector v1, float num)
 	return (new);
 }
 
-t_vector v_div_scal(t_vector v1, float num)
+t_vector v3_div(t_vector v1, float num)
 {
 	t_vector new;
 

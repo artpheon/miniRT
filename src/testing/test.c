@@ -30,14 +30,14 @@ void print_scene(t_scene *conf)
 	{
 		printf("Original XYZ coordinates of the camera #%d: %.2f, %.2f, %.2f\n",
 			   i,
-			   ((t_camera *) (conf->camera->content))->origin_coord.x,
-			   ((t_camera *) (conf->camera->content))->origin_coord.y,
-			   ((t_camera *) (conf->camera->content))->origin_coord.z);
+			   ((t_camera *) (conf->camera->content))->orig.x,
+			   ((t_camera *) (conf->camera->content))->orig.y,
+			   ((t_camera *) (conf->camera->content))->orig.z);
 		printf("Normalized XYZ vectors of the camera #%d: %.2f, %.2f, %.2f\n",
 			   i,
-			   ((t_camera *) (conf->camera->content))->vector_norm.x,
-			   ((t_camera *) (conf->camera->content))->vector_norm.y,
-			   ((t_camera *) (conf->camera->content))->vector_norm.z);
+			   ((t_camera *) (conf->camera->content))->normal.x,
+			   ((t_camera *) (conf->camera->content))->normal.y,
+			   ((t_camera *) (conf->camera->content))->normal.z);
 		printf("FOV of the camera #%d: %d\n\n",
 			   i,
 			   ((t_camera *) (conf->camera->content))->fov);
@@ -56,9 +56,9 @@ void print_scene(t_scene *conf)
 		{
 			printf("Original XYZ of the lighting #%d: %.2f, %.2f, %.2f\n",
 				   i,
-				   ((t_light *) (conf->light->content))->origin_coord.x,
-				   ((t_light *) (conf->light->content))->origin_coord.y,
-				   ((t_light *) (conf->light->content))->origin_coord.z);
+				   ((t_light *) (conf->light->content))->orig.x,
+				   ((t_light *) (conf->light->content))->orig.y,
+				   ((t_light *) (conf->light->content))->orig.z);
 			printf("Ratio of the camera #%d: %f\n",
 				   i,
 				   ((t_light *) (conf->light->content))->ratio);
@@ -87,9 +87,9 @@ void print_scene(t_scene *conf)
 			printf("SPHERE:\nOriginal XYZ coordinates: %.2f, %.2f, %.2f\n"
 				   "Sphere radius: %.3f\n"
 				   "Sphere RGB colour: %.0f, %.0f, %.0f\n\n",
-				   ((t_object *) (conf->object->content))->origin_coord.x,
-				   ((t_object *) (conf->object->content))->origin_coord.y,
-				   ((t_object *) (conf->object->content))->origin_coord.z,
+				   ((t_object *) (conf->object->content))->orig.x,
+				   ((t_object *) (conf->object->content))->orig.y,
+				   ((t_object *) (conf->object->content))->orig.z,
 				   ((t_object *) (conf->object->content))->sp_radius,
 				   ((t_object *) (conf->object->content))->rgb.x,
 				   ((t_object *) (conf->object->content))->rgb.y,
@@ -101,12 +101,12 @@ void print_scene(t_scene *conf)
 			printf("PLANE:\nOriginal XYZ coordinates: %.2f, %.2f, %.2f\n"
 				   "Normalized vector: %.2f %.2f %.2f\n"
 				   "Plane RGB colour: %.0f, %.0f, %.0f\n\n",
-				   ((t_object *) (conf->object->content))->origin_coord.x,
-				   ((t_object *) (conf->object->content))->origin_coord.y,
-				   ((t_object *) (conf->object->content))->origin_coord.z,
-				   ((t_object *) (conf->object->content))->vector_norm.x,
-				   ((t_object *) (conf->object->content))->vector_norm.y,
-				   ((t_object *) (conf->object->content))->vector_norm.z,
+				   ((t_object *) (conf->object->content))->orig.x,
+				   ((t_object *) (conf->object->content))->orig.y,
+				   ((t_object *) (conf->object->content))->orig.z,
+				   ((t_object *) (conf->object->content))->normal.x,
+				   ((t_object *) (conf->object->content))->normal.y,
+				   ((t_object *) (conf->object->content))->normal.z,
 				   ((t_object *) (conf->object->content))->rgb.x,
 				   ((t_object *) (conf->object->content))->rgb.y,
 				   ((t_object *) (conf->object->content))->rgb.z);
@@ -118,12 +118,12 @@ void print_scene(t_scene *conf)
 				   "Normalized vector: %.2f %.2f %.2f\n"
 				   "Side size: %.3f\n"
 				   "Plane RGB colour: %.0f, %.0f, %.0f\n\n",
-				   ((t_object *) (conf->object->content))->origin_coord.x,
-				   ((t_object *) (conf->object->content))->origin_coord.y,
-				   ((t_object *) (conf->object->content))->origin_coord.z,
-				   ((t_object *) (conf->object->content))->vector_norm.x,
-				   ((t_object *) (conf->object->content))->vector_norm.y,
-				   ((t_object *) (conf->object->content))->vector_norm.z,
+				   ((t_object *) (conf->object->content))->orig.x,
+				   ((t_object *) (conf->object->content))->orig.y,
+				   ((t_object *) (conf->object->content))->orig.z,
+				   ((t_object *) (conf->object->content))->normal.x,
+				   ((t_object *) (conf->object->content))->normal.y,
+				   ((t_object *) (conf->object->content))->normal.z,
 				   ((t_object *) (conf->object->content))->side_size,
 				   ((t_object *) (conf->object->content))->rgb.x,
 				   ((t_object *) (conf->object->content))->rgb.y,
@@ -137,12 +137,12 @@ void print_scene(t_scene *conf)
 				   "Cylinder diameter: %.3f\n"
 				   "Cylinder height: %.3f\n"
 				   "RGB colour: %.0f, %.0f, %.0f\n\n",
-				   ((t_object *) (conf->object->content))->origin_coord.x,
-				   ((t_object *) (conf->object->content))->origin_coord.y,
-				   ((t_object *) (conf->object->content))->origin_coord.z,
-				   ((t_object *) (conf->object->content))->vector_norm.x,
-				   ((t_object *) (conf->object->content))->vector_norm.y,
-				   ((t_object *) (conf->object->content))->vector_norm.z,
+				   ((t_object *) (conf->object->content))->orig.x,
+				   ((t_object *) (conf->object->content))->orig.y,
+				   ((t_object *) (conf->object->content))->orig.z,
+				   ((t_object *) (conf->object->content))->normal.x,
+				   ((t_object *) (conf->object->content))->normal.y,
+				   ((t_object *) (conf->object->content))->normal.z,
 				   ((t_object *) (conf->object->content))->cyl_d,
 				   ((t_object *) (conf->object->content))->cyl_h,
 				   ((t_object *) (conf->object->content))->rgb.x,
@@ -157,9 +157,9 @@ void print_scene(t_scene *conf)
 				   "XYZ coordinates of 2nd point: %.2f %.2f %.2f\n"
 				   "XYZ coordinates of 3rd point: %.2f %.2f %.2f\n"
 				   "RGB colour: %.0f, %.0f, %.0f\n\n",
-				   ((t_object *) (conf->object->content))->origin_coord.x,
-				   ((t_object *) (conf->object->content))->origin_coord.y,
-				   ((t_object *) (conf->object->content))->origin_coord.z,
+				   ((t_object *) (conf->object->content))->orig.x,
+				   ((t_object *) (conf->object->content))->orig.y,
+				   ((t_object *) (conf->object->content))->orig.z,
 				   ((t_object *) (conf->object->content))->angle2.x,
 				   ((t_object *) (conf->object->content))->angle2.y,
 				   ((t_object *) (conf->object->content))->angle2.z,

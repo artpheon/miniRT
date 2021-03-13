@@ -77,6 +77,25 @@ void		exit_error(char *message, int errn)
     write(2, message, ft_strlen(message));
     exit(errn);
 }
+void		exit_free(t_info *info)
+{
+	int i;
+
+	i = 0;
+	ft_lstclear(&(info->scene->camera), (void *)free);
+	ft_lstclear(&(info->scene->light), (void *)free);
+	ft_lstclear(&(info->scene->object), (void *)free);
+	free(info->scene);
+	while(i < info->cams)
+	{
+		mlx_destroy_image(info->mlx, info->img[i].img);
+		i++;
+	}
+	free(info->img);
+	mlx_destroy_window(info->mlx, info->win);
+	free(info);
+	exit(EXIT_SUCCESS);
+}
 
 int			typecmp(char *t, t_object *o)
 {

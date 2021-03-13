@@ -8,6 +8,7 @@ float		macheps(void);
 int			ctohex(t_vector rgb);
 t_vector	hextoc(int hex);
 void		exit_error(char *message, int errn);
+void		exit_free(t_info *info);
 int			typecmp(char *t, t_object *o);
 
 #endif

@@ -177,12 +177,12 @@ t_vector	get_tr_normal(t_object *tr)
 	t_vector v;
 	t_vector norm;
 
-	u = vector_sub(tr->angle2, tr->origin_coord);
-	v = vector_sub(tr->angle3, tr->origin_coord);
-	norm = vector_prod(u, v);
+	u = v3_sub(tr->angle2, tr->orig);
+	v = v3_sub(tr->angle3, tr->orig);
+	norm = v3_cross(u, v);
 	normalize(&norm);
 	if (norm.z < 0)
-		norm = v_mult_scal(norm, -1); // fixme if camera is behind
+		norm = v3_mult(norm, -1); // fixme if camera is behind
 	return (norm);
 }
 
@@ -206,10 +206,10 @@ t_list		*get_camera(char *line)
 	line++;
 	if (!(new_cam = (t_camera *)malloc(sizeof(t_camera))))
 		exit_error("Could not allocate memory for camera", 1);
-	str_to_three(line, &new_cam->origin_coord);
+	str_to_three(line, &new_cam->orig);
 	line = skip_3num(line);
-	str_to_three(line, &new_cam->vector_norm);
-	normalize(&new_cam->vector_norm);
+	str_to_three(line, &new_cam->normal);
+	normalize(&new_cam->normal);
 	line = skip_3num(line);
 	new_cam->fov = ft_atoi(line);
 	if (new_cam->fov < 1 || new_cam->fov > 180)
@@ -228,7 +228,7 @@ t_list		*get_light(char *line)
 	line++;
 	if (!(new_light = (t_light *)malloc(sizeof(t_light))))
 		exit_error("Could not allocate memory for light", 1);
-	str_to_three(line, &new_light->origin_coord);
+	str_to_three(line, &new_light->orig);
 	line = skip_3num(line);
 	new_light->ratio = ft_atof(line);
 	lr_check(new_light->ratio);
@@ -247,7 +247,7 @@ t_list		*get_sphere(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sp", 3);
-	str_to_three(line, &new_obj->origin_coord);
+	str_to_three(line, &new_obj->orig);
 	line = skip_3num(line);
 	new_obj->sp_radius = ft_atof(line) / 2;
 	if (new_obj->sp_radius <= 0)
@@ -267,11 +267,11 @@ t_list		*get_plane(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "pl", 3);
-	str_to_three(line, &new_obj->origin_coord);
+	str_to_three(line, &new_obj->orig);
 	line = skip_3num(line);
-	str_to_three(line, &new_obj->vector_norm);
-	p_check_n(&new_obj->vector_norm);
-	normalize(&new_obj->vector_norm);
+	str_to_three(line, &new_obj->normal);
+	p_check_n(&new_obj->normal);
+	normalize(&new_obj->normal);
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->rgb);
 	new = ft_lstnew(new_obj);
@@ -287,11 +287,11 @@ t_list		*get_square(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "sq", 3);
-	str_to_three(line, &new_obj->origin_coord);
+	str_to_three(line, &new_obj->orig);
 	line = skip_3num(line);
-	str_to_three(line, &new_obj->vector_norm);
-	p_check_n(&new_obj->vector_norm);
-	normalize(&new_obj->vector_norm);
+	str_to_three(line, &new_obj->normal);
+	p_check_n(&new_obj->normal);
+	normalize(&new_obj->normal);
 	line = skip_3num(line);
 	new_obj->side_size = (float)ft_atof(line);
 	line = skip_1num(line);
@@ -309,11 +309,11 @@ t_list		*get_cylinder(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "cy", 3);
-	str_to_three(line, &new_obj->origin_coord);
+	str_to_three(line, &new_obj->orig);
 	line = skip_3num(line);
-	str_to_three(line, &new_obj->vector_norm);
-	p_check_n(&new_obj->vector_norm);
-	normalize(&new_obj->vector_norm);
+	str_to_three(line, &new_obj->normal);
+	p_check_n(&new_obj->normal);
+	normalize(&new_obj->normal);
 	line = skip_3num(line);
 	new_obj->cyl_d = (float)ft_atof(line);
 	line = skip_1num(line);
@@ -326,9 +326,7 @@ t_list		*get_cylinder(char *line)
 
 int			v3cmp(t_vector v1, t_vector v2)
 {
-	if (v1.x == v2.x &&
-		v1.y == v2.y &&
-		v1.z == v2.z)
+	if (v1.x == v2.x &&	v1.y == v2.y && v1.z == v2.z)
 		return (1);
 	else
 		return (0);
@@ -343,14 +341,18 @@ t_list		*get_triangle(char *line)
 	if (!(new_obj = (t_object *)malloc(sizeof(t_object))))
 		exit_error("Could not allocate memory for an object", 1);
 	ft_strlcpy(new_obj->type, "tr", 3);
-	str_to_three(line, &new_obj->origin_coord);
+	str_to_three(line, &new_obj->orig);
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->angle2);
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->angle3);
+	if (v3cmp(new_obj->orig, new_obj->angle2) ||
+		v3cmp(new_obj->angle2, new_obj->angle3) ||
+		v3cmp(new_obj->angle3, new_obj->orig))
+		exit_error("Triangle has impossible coordinates", -1);
 	line = skip_3num(line);
 	str_to_three(line, &new_obj->rgb);
-	new_obj->vector_norm = get_tr_normal(new_obj);
+	new_obj->normal = get_tr_normal(new_obj);
 	new = ft_lstnew(new_obj);
 	return (new);
 }

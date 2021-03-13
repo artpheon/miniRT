@@ -31,8 +31,8 @@ typedef struct	s_vector
 typedef struct 	s_object
 {
 	char 		type[3];
-	t_vector	origin_coord;
-	t_vector	vector_norm;
+	t_vector	orig;
+	t_vector	normal;
 	t_vector	rgb;
 	float 		sp_radius;
 	float		side_size;
@@ -44,14 +44,14 @@ typedef struct 	s_object
 
 typedef struct 	s_camera
 {
-	t_vector	origin_coord;
-	t_vector	vector_norm;
+	t_vector	orig;
+	t_vector	normal;
 	int 		fov;
 }				t_camera;
 
 typedef struct	s_light
 {
-	t_vector	origin_coord;
+	t_vector	orig;
 	float 		ratio;
 	t_vector	rgb;
 }				t_light;
@@ -78,20 +78,6 @@ typedef struct  s_ray
     t_vector    dir;
 }               t_ray;
 
-typedef struct  s_mat
-{
-    float		amb; //0.05
-	float		diff; // 1
-	float		spec; // 1
-    t_vector    rgb; 
-}               t_mat;
-
-typedef struct s_roots
-{
-	float		t1;
-	float		t2;
-}				t_roots;
-
 # include <fcntl.h>
 # include <stdio.h>
 # include <string.h>
@@ -102,6 +88,8 @@ typedef struct s_roots
 # include "mlx.h"
 # include "geom.h"
 # include "mlx_head.h"
+# include "screenshot.h"
+# include "calc_light.h"
 # include "test.h"
 # include "utils.h"
 
