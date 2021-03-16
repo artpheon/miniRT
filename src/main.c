@@ -16,6 +16,7 @@ int	main(int argc, char **argv)
 {
 	t_info *info;
 
+	setbuf(stdout, NULL);
 	info = malloc(sizeof(t_info));
 	if (info)
 	{
