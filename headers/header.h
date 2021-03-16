@@ -40,6 +40,7 @@
 #  define TAB 48
 # endif
 # define RED   "\x1B[31m"
+# define GRN   "\x1B[32m"
 # define RESET "\x1B[0m"
 # define MFAIL "Malloc failed"
 # define BG_COLOUR 0x48494B
