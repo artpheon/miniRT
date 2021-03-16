@@ -35,6 +35,7 @@ LIN_INC		= -I./headers \
 APP_INC		= -I./headers \
 		  -I./libs/libft \
 		  -I./libs/mms
+HEADERS		= headers/*.h
 
 RM		= rm -f
 
@@ -50,15 +51,19 @@ APP_LIBS	= -L./libs/libft -lft \
 			-framework AppKit \
 			libmlx.dylib
 
-all: apple
+all: ${NAME}
 
-${NAME}: all
+${NAME}: ${OBS} ${HEADERS}
+	@make -C ./libs/libft/
+	@make -C ./libs/mms/
+	@mv ./libs/mms/libmlx.dylib .
+	gcc ${OBS} -Wall -Wextra -Werror -g ${APP_INC} ${APP_LIBS} -o ${NAME}
 
 linux:	${OBS}
 	@make -C ./libs/libft/
 	gcc ${OBS} -Wall -Wextra -Werror -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
 
-apple: ${OBS}
+apple:
 	@make -C ./libs/libft/
 	@make -C ./libs/mms/
 	@mv ./libs/mms/libmlx.dylib .
@@ -77,4 +82,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: clean fclean bonus re all
+.PHONY: clean fclean apple linux re all

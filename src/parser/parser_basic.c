@@ -67,8 +67,13 @@ t_scene		*parser(char *file)
 	fd = open(file, O_RDONLY);
 	p_first_check(fd, file);
 	new = alloc_scene();
-	while (0 < (read_return = get_next_line(&line, fd)))
+	while (-1 < (read_return = get_next_line(line, fd)))
+	{
 		fill_scene(new, line);
+		*line = 0;
+		if (read_return == 0)
+			break ;
+	}
 	if (read_return == -1)
 		exit_error("Error while reading from FD", -1);
 	p_second_check(read_return, new);

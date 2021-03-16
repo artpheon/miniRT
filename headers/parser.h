@@ -13,7 +13,7 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-int			get_next_line(char **line, int fd);
+int			get_next_line(char *line, int fd);
 t_scene		*alloc_scene(void);
 void		p_check_n(t_vector *n);
 void		lr_check(float f);

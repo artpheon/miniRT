@@ -30,7 +30,6 @@
 # include "mlx_additional.h"
 # include "screenshot.h"
 # include "calc_light.h"
-# include "test.h"
 # include "utils.h"
 # ifdef __linux__
 #  define OS "Linux"

@@ -12,7 +12,7 @@
 
 #include "header.h"
 
-int		get_next_line(char **line, int fd)
+int		get_next_line(char *line, int fd)
 {
 	char	buff;
 	int		rfd;
@@ -30,9 +30,9 @@ int		get_next_line(char **line, int fd)
 		else
 		{
 			if (buff != '\n')
-				(*line)[k] = buff;
+				line[k] = buff;
 			k++;
-			(*line)[k] = 0;
+			line[k] = 0;
 		}
 	}
 	return (1);
