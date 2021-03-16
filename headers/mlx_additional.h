@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   calc_light.h                                       :+:      :+:    :+:   */
+/*   mlx_additional.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hrobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/16 17:42:18 by hrobbin           #+#    #+#             */
-/*   Updated: 2021/03/16 17:43:08 by hrobbin          ###   ########.fr       */
+/*   Created: 2021/03/16 17:39:43 by hrobbin           #+#    #+#             */
+/*   Updated: 2021/03/16 17:39:57 by hrobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CALC_LIGHT_H
-# define CALC_LIGHT_H
+#ifndef MLX_ADDITIONAL_H
+# define MLX_ADDITIONAL_H
 
-void		get_hit(t_hit *hit, t_closest *cl, t_ray *ray);
-float		l_shading(t_hit *hit, t_light *light);
-float		s_shading(t_hit *hit, t_light *light, t_ray *ray);
-int			in_shad(t_scene *sc, t_light *light, t_hit *hit);
-t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit);
+int		key_hook(int keycode, t_info *info);
+int		w_close(t_info *info);
+void	my_mlx_pixel_put(t_data *data, int x, int y, int color);
+void	xy_size_check(t_scene *scene, void *mlx);
 #endif

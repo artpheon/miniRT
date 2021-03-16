@@ -1,13 +1,22 @@
-//
-// Created by Howe Robbin on 3/13/21.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   screenshot.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hrobbin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/16 00:01:24 by hrobbin           #+#    #+#             */
+/*   Updated: 2021/03/16 00:01:25 by hrobbin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "header.h"
 
 void	make_header(int fd, int w, int h)
 {
-	char			head[54];
-	int				i;
+	char		head[54];
+	int			i;
+
 	i = 0;
 	while (i < 54)
 	{
@@ -31,20 +40,12 @@ void	make_header(int fd, int w, int h)
 	write(fd, head, 54);
 }
 
-unsigned int	my_mlx_pixel_get(t_data *data, int x, int y)
-{
-	unsigned int colour;
-
-	colour = *(unsigned int*)(data->addr + (y * data->line_length + x * (data->bits_per_pixel / 8)));
-	return (colour);
-}
-
 void	writedata(int w, int h, t_data *img_data, int fd)
 {
-	char	clr[4];
-	unsigned colour;
-	int width;
-	int height;
+	char		clr[4];
+	unsigned	colour;
+	int			width;
+	int			height;
 
 	height = h;
 	while (--height >= 0)
@@ -52,7 +53,9 @@ void	writedata(int w, int h, t_data *img_data, int fd)
 		width = -1;
 		while (++width < w)
 		{
-			colour = *(unsigned int*)(img_data->addr + (height * img_data->line_length + width * (img_data->bits_per_pixel / 8)));
+			colour = *(unsigned int*)(img_data->addr +
+					(height * img_data->line_length +
+					width * (img_data->bits_per_pixel / 8)));
 			clr[0] = colour >> 0;
 			clr[1] = colour >> 8;
 			clr[2] = colour >> 16;
@@ -76,17 +79,22 @@ int		writebmp(int w, int h, t_data *img_data)
 
 void	shoot_screen(t_info *info)
 {
-	t_scene *scene;
+	t_scene			*scene;
 
 	scene = info->scene;
 	info->cams = 1;
 	info->img = malloc(sizeof(t_data));
-	info->img->img = mlx_new_image(info->mlx, scene->width, scene->height); // создаем имидж
-	info->img->addr = mlx_get_data_addr(info->img->img,
-									  &info->img->bits_per_pixel,
-									  &info->img->line_length,
-									  &info->img->endian);
-	put_rays(info->scene, info->img);
-	writebmp(scene->width, scene->height, info->img);
-	exit_free(info);
+	if (info->img)
+	{
+		info->img->img = mlx_new_image(info->mlx, scene->width, scene->height);
+		info->img->addr = mlx_get_data_addr(info->img->img,
+											&info->img->bits_per_pixel,
+											&info->img->line_length,
+											&info->img->endian);
+		put_rays(info->scene, info->img, 0);
+		writebmp(scene->width, scene->height, info->img);
+		exit_free(info, 1);
+	}
+	else
+		exit_error(MFAIL, -1);
 }

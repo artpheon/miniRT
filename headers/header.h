@@ -1,83 +1,20 @@
-//
-// Created by Howe Robbin on 1/20/21.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   header.h                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hrobbin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/16 17:39:11 by hrobbin           #+#    #+#             */
+/*   Updated: 2021/03/16 17:40:06 by hrobbin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef HEADER_H
 # define HEADER_H
 
-# ifdef __linux__
-	#  define OS "Linux"
-	#  define ESC 65307
-	#  define TAB 65289
-	#  define M_PI 3.14159265358979323846
-# elif __APPLE__
-	#  define OS "Mac"
-	#  define ESC 53
-	#  define TAB 48
-# endif
-# define K_D 35
-# define K_S 30
-# define P 60
-# define BG_COLOUR 0x48494B
 # include "libft.h"
-
-typedef struct	s_vector
-{
-	float x;
-	float y;
-	float z;
-}				t_vector;
-
-typedef struct 	s_object
-{
-	char 		type[3];
-	t_vector	orig;
-	t_vector	normal;
-	t_vector	rgb;
-	float 		sp_radius;
-	float		side_size;
-	float		cyl_d;
-	float 		cyl_h;
-	t_vector	angle2;
-	t_vector	angle3;
-}				t_object;
-
-typedef struct 	s_camera
-{
-	t_vector	orig;
-	t_vector	normal;
-	int 		fov;
-}				t_camera;
-
-typedef struct	s_light
-{
-	t_vector	orig;
-	float 		ratio;
-	t_vector	rgb;
-}				t_light;
-
-typedef struct	s_ambient
-{
-	float		ratio;
-	t_vector	colour;
-}				t_ambient;
-
-typedef struct	s_scene
-{
-	int				width;
-	int				height;
-	t_ambient		ambl;
-	t_list			*camera;
-	t_list			*light;
-	t_list			*object;
-}				t_scene;
-
-typedef struct  s_ray
-{
-    t_vector    orig;
-    t_vector    dir;
-}               t_ray;
-
+# include "main.h"
 # include <fcntl.h>
 # include <stdio.h>
 # include <string.h>
@@ -85,13 +22,35 @@ typedef struct  s_ray
 # include <mlx.h>
 # include <math.h>
 # include "parser.h"
-# include "mlx.h"
 # include "geom.h"
-# include "mlx_head.h"
+# include "colours.h"
+# include "renderer.h"
+# include "intersections.h"
+# include "ray.h"
+# include "mlx_additional.h"
 # include "screenshot.h"
 # include "calc_light.h"
 # include "test.h"
 # include "utils.h"
-
-
-#endif //MINIRT_HEADER_H
+# ifdef __linux__
+#  define OS "Linux"
+#  define ESC 65307
+#  define TAB 65289
+#  define M_PI 3.14159265358979323846
+# elif __APPLE__
+#  define OS "Mac"
+#  define ESC 53
+#  define TAB 48
+# endif
+# define RED   "\x1B[31m"
+# define GRN   "\x1B[32m"
+# define YEL   "\x1B[33m"
+# define BLU   "\x1B[34m"
+# define MAG   "\x1B[35m"
+# define CYN   "\x1B[36m"
+# define WHT   "\x1B[37m"
+# define RESET "\x1B[0m"
+# define MFAIL "Malloc failed"
+# define BG_COLOUR 0x48494B
+# define M_EPS 0.000001
+#endif

@@ -1,16 +1,30 @@
 NAME	= miniRT
 
-SRC		=	$(addprefix src/,conf_parser/parser.c \
+SRC		=	$(addprefix src/,\
+			parser/parser_check.c \
+			parser/parser_basic.c \
+			parser/parser_param1.c \
+			parser/parser_param2.c \
+			parser/parser_extra.c \
 			geom/geom.c \
-			mlx/mlx_head.c \
-			testing/test.c \
+			geom/geom_extra.c \
+			renderer/renderer.c \
+			mlx/mlx_additional.c \
 			utils/utils.c \
+			colours/colours.c \
+			intersections/sp_inter.c \
+			intersections/pl_inter.c \
+			intersections/tr_inter.c \
+			intersections/sq_inter.c \
+			intersections/cy_inter.c \
+			intersections/closest.c \
+			rays/ray.c \
 			lighting/calc_light.c \
 			screenshot/screenshot.c \
 			main.c)
 
 %.o: %.c
-	gcc -Wall -Wextra ${LIN_INC} -g -c $< -o ${<:.c=.o}
+	gcc -Wall -Wextra -Werror ${APP_INC} -g -c $< -o ${<:.c=.o}
 
 OBS		= ${SRC:.c=.o}
 
@@ -38,15 +52,17 @@ APP_LIBS	= -L./libs/libft -lft \
 
 all: apple
 
+${NAME}: all
+
 linux:	${OBS}
 	@make -C ./libs/libft/
-	gcc ${OBS} -Wall -Wextra -g -fsanitize=address ${LIN_INC} ${LIN_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra -Werror -g ${LIN_INC} ${LIN_LIBS} -o ${NAME}
 
 apple: ${OBS}
 	@make -C ./libs/libft/
 	@make -C ./libs/mms/
 	@mv ./libs/mms/libmlx.dylib .
-	gcc ${OBS} -Wall -Wextra -g ${APP_INC} ${APP_LIBS} -o ${NAME}
+	gcc ${OBS} -Wall -Wextra -Werror -g ${APP_INC} ${APP_LIBS} -o ${NAME}
 
 clean:
 	${RM} ${OBS}
@@ -57,6 +73,7 @@ fclean: clean
 	${RM} ${NAME}
 	@make fclean -C ./libs/libft/
 	@make clean -C ./libs/mms/
+	${RM} libmlx.dylib
 
 re: fclean all
 

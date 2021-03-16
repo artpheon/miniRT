@@ -1,21 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   calc_light.h                                       :+:      :+:    :+:   */
+/*   colours.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hrobbin <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/16 17:42:18 by hrobbin           #+#    #+#             */
-/*   Updated: 2021/03/16 17:43:08 by hrobbin          ###   ########.fr       */
+/*   Created: 2021/03/16 17:41:58 by hrobbin           #+#    #+#             */
+/*   Updated: 2021/03/16 17:43:31 by hrobbin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CALC_LIGHT_H
-# define CALC_LIGHT_H
+#ifndef COLOURS_H
+# define COLOURS_H
 
-void		get_hit(t_hit *hit, t_closest *cl, t_ray *ray);
-float		l_shading(t_hit *hit, t_light *light);
-float		s_shading(t_hit *hit, t_light *light, t_ray *ray);
-int			in_shad(t_scene *sc, t_light *light, t_hit *hit);
-t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit);
+int			ctohex(t_vector rgb);
+t_vector	hextoc(int hex);
+t_vector	rgb_add(t_vector rgb, t_vector add);
+t_vector	rgb_add_n(t_vector rgb, float num);
+t_vector	rgb_mult_n(t_vector rgb, float num);
 #endif

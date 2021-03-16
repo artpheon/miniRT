@@ -23,12 +23,13 @@
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="Project" targetName="re" />
-      <config projectName="Project" targetName="bonus" />
-      <config projectName="Project" targetName="all" />
-      <config projectName="Project" targetName="linux" />
-      <config projectName="Project" targetName="fclean" />
-      <config projectName="Project" targetName="apple" />
+      <config projectName="miniRT" targetName="re" />
+      <config projectName="miniRT" targetName="bonus" />
+      <config projectName="miniRT" targetName="all" />
+      <config projectName="miniRT" targetName="fclean" />
+      <config projectName="miniRT" targetName="linux" />
+      <config projectName="miniRT" targetName="miniRT" />
+      <config projectName="miniRT" targetName="apple" />
     </generated>
   </component>
   <component name="CMakeSettings" AUTO_RELOAD="true">
@@ -38,15 +39,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc2d3eac-22b1-4a34-9832-f8d2afbb15da" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/headers/colours.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/headers/intersections.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/headers/main.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/headers/mlx_additional.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/headers/ray.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/libs/libft/ft_atof.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/libs/libft/ft_intlen.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/libs/libft/ft_isspace.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/scenes/sample2.rt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/colours/colours.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/geom/geom_extra.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/closest.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/cy_inter.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/pl_inter.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/sp_inter.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/sq_inter.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/intersections/tr_inter.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/mlx/mlx_additional.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parser/parser_basic.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parser/parser_check.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parser/parser_extra.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/parser/parser_param1.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/rays/ray.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/miniRT.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/miniRT.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/headers/mlx_head.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/mlx_head.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/calc_light.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/calc_light.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/geom.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/geom.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/header.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/header.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/mlx_head.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/renderer.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/parser.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/parser.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/screenshot.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/screenshot.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/test.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/headers/utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/headers/utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libmlx.dylib" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/libft/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/libs/libft/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/libft/libft.h" beforeDir="false" afterPath="$PROJECT_DIR$/libs/libft/libft.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save_image.bmp" beforeDir="false" afterPath="$PROJECT_DIR$/save_image.bmp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scenes/sample1.rt" beforeDir="false" afterPath="$PROJECT_DIR$/scenes/sample1.rt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scenes/spheres_3.rt" beforeDir="false" afterPath="$PROJECT_DIR$/scenes/spheres_3.rt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scenes/triangle1.rt" beforeDir="false" afterPath="$PROJECT_DIR$/scenes/triangle1.rt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scenes/triangle2.rt" beforeDir="false" afterPath="$PROJECT_DIR$/scenes/triangle2.rt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/mlx/mlx_head.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/mlx/mlx_head.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/conf_parser/parser.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/geom/geom.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/geom/geom.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lighting/calc_light.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/lighting/calc_light.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mlx/mlx_head.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/renderer.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/screenshot/screenshot.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/screenshot/screenshot.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/testing/test.c" beforeDir="false" afterPath="$PROJECT_DIR$/testing/test.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/utils.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/utils.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +167,10 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/rays" />
       <recent name="$PROJECT_DIR$/src" />
+      <recent name="$PROJECT_DIR$/src/renderer" />
       <recent name="$PROJECT_DIR$/scenes" />
     </key>
   </component>
@@ -142,7 +185,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="apple" type="CLionNativeAppRunConfigurationType" PROGRAM_PARAMS="scenes/triangle2.rt" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="apple" CONFIG_NAME="apple" version="1" RUN_PATH="$PROJECT_DIR$/miniRT">
+    <configuration name="apple" type="CLionNativeAppRunConfigurationType" PROGRAM_PARAMS="scenes/sample2.rt --save" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="apple" CONFIG_NAME="apple" version="1" RUN_PATH="$PROJECT_DIR$/miniRT">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -158,6 +201,11 @@
       </method>
     </configuration>
     <configuration name="linux" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="linux" CONFIG_NAME="linux" version="1">
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="miniRT" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="miniRT" TARGET_NAME="miniRT" CONFIG_NAME="miniRT" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -179,6 +227,7 @@
       <item itemvalue="Makefile Application.fclean" />
       <item itemvalue="Makefile Application.re" />
       <item itemvalue="Makefile Application.linux" />
+      <item itemvalue="Makefile Application.miniRT" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -220,7 +269,9 @@
       <workItem from="1615618171365" duration="11709000" />
       <workItem from="1615634185349" duration="16583000" />
       <workItem from="1615651967001" duration="231000" />
-      <workItem from="1615657192569" duration="6755000" />
+      <workItem from="1615657192569" duration="7022000" />
+      <workItem from="1615833517012" duration="10072000" />
+      <workItem from="1615899184523" duration="5922000" />
     </task>
     <servers />
   </component>

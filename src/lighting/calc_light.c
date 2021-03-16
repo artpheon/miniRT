@@ -1,9 +1,18 @@
-//
-// Created by Howe Robbin on 3/13/21.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   calc_light.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hrobbin <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/15 23:59:55 by hrobbin           #+#    #+#             */
+/*   Updated: 2021/03/16 17:38:07 by hrobbin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-void	get_hit(t_hit *hit, t_closest *cl, t_ray *ray)
+void		get_hit(t_hit *hit, t_closest *cl, t_ray *ray)
 {
 	hit->hit_dist = cl->cl_t * 0.99;
 	hit->hit_pos = v3_add(ray->orig, v3_mult(ray->dir, hit->hit_dist));
@@ -21,7 +30,7 @@ void	get_hit(t_hit *hit, t_closest *cl, t_ray *ray)
 	}
 }
 
-float	l_shading(t_hit *hit, t_light *light)
+float		l_shading(t_hit *hit, t_light *light)
 {
 	float		l_coef;
 	float		l_intens;
@@ -38,10 +47,9 @@ float	l_shading(t_hit *hit, t_light *light)
 	return (l_coef);
 }
 
-float	s_shading(t_hit *hit, t_light *light, t_ray *ray)
+float		s_shading(t_hit *hit, t_light *light, t_ray *ray)
 {
 	float		coef;
-	float		n_dot_l;
 	float		r_dot_v;
 	t_vector	v_to_lght;
 	t_vector	refl;
@@ -49,8 +57,8 @@ float	s_shading(t_hit *hit, t_light *light, t_ray *ray)
 
 	coef = 0;
 	v_to_lght = v3_sub(light->orig, hit->hit_pos);
-	n_dot_l = dot_prod(hit->hit_normal, v_to_lght);
-	refl = v3_mult(v3_mult(hit->hit_normal, 2), n_dot_l);
+	refl = v3_mult(v3_mult(hit->hit_normal, 2),
+					dot_prod(hit->hit_normal, v_to_lght));
 	refl = v3_sub(refl, v_to_lght);
 	v = v3_mult(ray->dir, -1);
 	r_dot_v = dot_prod(refl, v);
@@ -60,7 +68,7 @@ float	s_shading(t_hit *hit, t_light *light, t_ray *ray)
 	return (coef);
 }
 
-int		in_shad(t_scene *sc, t_light *light, t_hit *hit)
+int			in_shad(t_scene *sc, t_light *light, t_hit *hit)
 {
 	t_closest	shadow;
 	t_vector	v_to_light;
@@ -86,7 +94,7 @@ t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit)
 
 	light = scene->light;
 	get_hit(hit, cl, ray);
-	rgb = rgb_mult_n(cl->cl_obj->rgb, scene->ambl.ratio); // fixme нельзя смешивать ргб
+	rgb = rgb_mult_n(cl->cl_obj->rgb, scene->ambl.ratio);
 	while (light)
 	{
 		if (in_shad(scene, light->content, hit))
@@ -95,9 +103,8 @@ t_vector	calc_light(t_closest *cl, t_scene *scene, t_ray *ray, t_hit *hit)
 			continue;
 		}
 		coef = l_shading(hit, light->content);
-		if (typecmp("sp", cl->cl_obj) || typecmp("cy", cl->cl_obj))
-			coef += s_shading(hit, light->content, ray);
-		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef); //fixme цвет
+		coef += s_shading(hit, light->content, ray);
+		temp = rgb_mult_n(((t_light *)(light->content))->rgb, coef);
 		rgb = rgb_add(rgb, temp);
 		light = light->next;
 	}
