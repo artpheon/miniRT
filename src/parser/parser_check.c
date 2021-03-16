@@ -49,7 +49,7 @@ void		p_second_check(int ret, t_scene *scene)
 	if (ret == -1)
 		exit_error("Cannot read file", -1);
 	if (scene->width < 1 || scene->height < 1)
-		exit_error("Window width or height values are too small", -1);
+		exit_error("Wrong values for window width or height", -1);
 	if (scene->camera == NULL || scene->camera->content == NULL)
 		exit_error("No cameras on the scene.", -1);
 	if (scene->ambl.ratio < 0)
