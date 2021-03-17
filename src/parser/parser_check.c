@@ -40,7 +40,7 @@ void		p_first_check(int fd, char *name)
 		name++;
 	while (*name != '.')
 		name--;
-	if (ft_strncmp(name, ".rt", 3))
+	if (ft_strncmp(name, ".rt\0", 4))
 		exit_error("Wrong file extension.", -1);
 }
 

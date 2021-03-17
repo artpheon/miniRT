@@ -1,3 +1,7 @@
+//
+// Created by Howe Robbin on 3/17/21.
+//
+
 #include "libft.h"
 
 float    ft_atof(char *str)
